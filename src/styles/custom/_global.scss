@@ -1,0 +1,14 @@
+.body {
+  margin: 0 !important;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+// Style cho v-btn
+.v-btn {
+  &:focus {
+    outline: none !important;
+  }
+}
