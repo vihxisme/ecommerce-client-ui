@@ -1,0 +1,112 @@
+<template>
+  <v-card class="relative flex flex-col w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Hình ảnh sản phẩm -->
+    <div class="relative w-full h-7/10">
+      <!-- Nhãn giảm giá -->
+      <div v-if="product.discount"
+        class="absolute top-10-px left-10-px bg-red-600 text-white text-xs px-2 py-1 rounded z-100">
+        -{{ product.discount }}%
+      </div>
+
+      <!-- Hình ảnh sản phẩm -->
+      <div class="w-full h-full flex items-end justify-center bg-cover object-cover overflow-hidden"
+        @mouseover="isDisplayBtn = true" @mouseleave="isDisplayBtn = false">
+
+        <div :style="{ backgroundImage: `url(${product.image})` }"
+          class="w-full h-full bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5">
+        </div>
+
+        <!-- Nút thêm vào giỏ hàng & xem nhanh -->
+        <div v-if="isDisplayBtn" class="absolute w-full bottom-3 left-3 flex justify-between items-center space-x-2">
+          <!-- Nút "Xem nhanh" -->
+          <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
+            @mouseover="isHoveredQuickView = true" @mouseleave="isHoveredQuickView = false">
+            <!-- link route -->
+            <router-link>
+              <div v-if="isHoveredQuickView" class="group-hover:opacity-100 transition duration-300">
+                <!-- Text hiển thị khi hover -->
+                <span class="absolute z-200 bottom-4r left-0 bg-black text-white text-xs px-2 py-1 rounded">Xem
+                  nhanh
+                </span>
+                <span class="absolute z-100 bottom-3-7r left-4/5r w-5 h-5 bg-black rotate-45"></span>
+              </div>
+              <v-icon class="mdi mdi-eye-outline"></v-icon>
+            </router-link>
+          </v-btn>
+
+          <!-- Nút "Thêm vào giỏ hàng" -->
+          <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
+            @mouseover="isHoveredAddToCart = true" @mouseleave="isHoveredAddToCart = false">
+            <!-- link route -->
+            <router-link>
+              <div v-if="isHoveredAddToCart" class="group-hover:opacity-100 transition duration-300">
+                <!-- Text hiển thị khi hover -->
+                <span class="absolute z-200 bottom-4r right-0 bg-black text-white text-xs px-2 py-1 rounded">
+                  Thêm vào giỏ hàng
+                </span>
+                <span class="absolute z-100 bottom-3-7r right-4/5r w-5 h-5 bg-black rotate-45"></span>
+              </div>
+              <v-icon class="mdi mdi-cart-outline text-lg"></v-icon>
+            </router-link>
+          </v-btn>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thông tin sản phẩm -->
+    <v-card-text class="relative flex-grow p-2">
+      <div class="flex w-full justify-start items-center space-x-2 mt-1">
+        <h3 class="text-sm text-left capitalize mt-1 mx-2 clamp-2 overflow-hidden overflow-ellipsis">{{
+          product.name }}
+          - {{ textToUppercase(product.code) }}</h3>
+      </div>
+
+      <!-- votes -->
+      <div class="flex w-full justify-start items-center py-2 mx-2">
+        <v-icon v-for="(item, index) in 5" :key="index" class="mdi mdi-star" size="16px" color="#DAA520"></v-icon>
+      </div>
+
+
+      <!-- Giá -->
+      <div class="flex w-full justify-between items-center">
+        <span v-if="product.finalPrice" class="text-red-500 text-left text-sm font-bold mx-2">{{
+          formatPrice(product.finalPrice)
+        }}₫</span>
+        <span v-if="product.price" class="text-gray-400 text-sm line-through font-bold mx-2">{{
+          formatPrice(product.price)
+        }}₫</span>
+      </div>
+    </v-card-text>
+  </v-card>
+</template>
+
+<script setup>
+import { defineProps, ref } from 'vue';
+
+// Nhận dữ liệu sản phẩm từ props
+defineProps({
+  product: {
+    type: Object,
+    required: true
+  }
+});
+
+// Biến hover độc lập cho từng nút
+const isHoveredQuickView = ref(false);
+const isHoveredAddToCart = ref(false);
+const isDisplayBtn = ref(false);
+
+// Định dạng giá tiền
+const formatPrice = (price) => price.toLocaleString("vi-VN");
+
+// Chữ in hoa 
+const textToUppercase = (text) => text.toUpperCase();
+
+// Chỉ ẩn nút khi chuột thực sự rời khỏi vùng cha
+const handleMouseLeave = (event) => {
+  const isLeaving = !event.currentTarget.contains(event.relatedTarget);
+  if (isLeaving) isDisplayBtn.value = false;
+};
+</script>
+
+<style scoped></style>

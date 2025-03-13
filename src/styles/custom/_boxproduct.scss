@@ -1,0 +1,22 @@
+.hover\:bg-red-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(239, 68, 68, var(--tw-bg-opacity)) !important;
+}
+
+.rotate-45 {
+  --rotate-45: 45deg;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(--rotate-45);
+}
+
+.hover\:scale-6\/5:hover {
+  transform: scale(1.07);
+  transition: transform 0.5s ease-in-out;
+
+}
+
+.clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
