@@ -6,8 +6,11 @@
   }
 }
 
-.v-btn {
+.icon-social-btn {
   border-radius: 12px;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
 }
 
 @media (max-width: 600px) {

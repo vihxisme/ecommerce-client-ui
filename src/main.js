@@ -12,20 +12,15 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 
-// tiktok logo
-import tiktoklogo from '@/assets/images/documentation/tiktok-logo.svg';
+// font-awesome
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
 
 // Material Design Icons (MDI)
 import "@mdi/font/css/materialdesignicons.css";
 
 // SCSS Styles
 import "@/styles/index.scss";
-
-const customIcons = {
-  tiktok: {
-    component: tiktoklogo, // Định nghĩa component SVG
-  },
-};
 
 // Khởi tạo Vue Router
 const router = createRouter({
@@ -38,17 +33,25 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',  // Sử dụng Material Design Icons
     aliases,
-    sets: {
-      mdi,
-      custom: customIcons,
-    },
   },
   components,
   directives,
+  theme: {
+    defaultTheme: 'light',
+    themes: {
+      light: {
+        typography: {
+          fontFamily: 'Montserrat, Roboto, sans-serif',
+        },
+      },
+    },
+  },
 })
 
 // Khởi tạo ứng dụng Vue
 const app = createApp(App);
+
+app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.use(router); // Đăng ký Vue Router
 app.use(vuetify); // Đăng ký Vuetify

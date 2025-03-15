@@ -1327,6 +1327,36 @@ select {
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
 }
 
+.bg-pink-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 228, 230, var(--tw-bg-opacity));
+}
+
+.bg-pink-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(254, 205, 211, var(--tw-bg-opacity));
+}
+
+.bg-pink-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(253, 164, 175, var(--tw-bg-opacity));
+}
+
+.bg-pink-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(251, 113, 133, var(--tw-bg-opacity));
+}
+
+.bg-pink-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(225, 29, 72, var(--tw-bg-opacity));
+}
+
+.bg-pink-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(190, 18, 60, var(--tw-bg-opacity));
+}
+
 .bg-pink-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(236, 72, 153, var(--tw-bg-opacity));
@@ -1436,7 +1466,10 @@ select {
   background-color: rgba(234, 179, 8, var(--tw-bg-opacity));
 }
 
-
+.bg-orange-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 237, 213, var(--tw-bg-opacity));
+}
 
 .bg-orange-200 {
   --tw-bg-opacity: 1;
@@ -1740,6 +1773,10 @@ select {
 
 .rounded-lg {
   border-radius: 0.5rem;
+}
+
+.rounded-50 {
+  border-radius: 50%;
 }
 
 .rounded-full {
@@ -2376,6 +2413,10 @@ select {
 
 .h-350-px {
   height: 350px;
+}
+
+.h-370-px {
+  height: 370px;
 }
 
 .h-400-px {
@@ -3839,6 +3880,41 @@ select {
   color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
+.hover\:text-red-100:hover {
+  --tw-text-opacity: 1;
+  color: rgba(254, 226, 226, var(--tw-text-opacity));
+}
+
+.hover\:text-red-200:hover {
+  --tw-text-opacity: 1;
+  color: rgba(254, 202, 202, var(--tw-text-opacity));
+}
+
+.hover\:text-red-300:hover {
+  --tw-text-opacity: 1;
+  color: rgba(252, 165, 165, var(--tw-text-opacity));
+}
+
+.hover\:text-red-400:hover {
+  --tw-text-opacity: 1;
+  color: rgba(248, 113, 113, var(--tw-text-opacity));
+}
+
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgba(239, 68, 68, var(--tw-text-opacity));
+}
+
+.hover\:text-red-600:hover {
+  --tw-text-opacity: 1;
+  color: rgba(220, 38, 38, var(--tw-text-opacity));
+}
+
+.hover\:text-red-700:hover {
+  --tw-text-opacity: 1;
+  color: rgba(185, 28, 28, var(--tw-text-opacity));
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4091,6 +4167,9 @@ select {
   width: 250px;
 }
 
+.w-270-px {
+  width: 270px;
+}
 
 .w-300-px {
   width: 300px;
@@ -5315,6 +5394,11 @@ fieldset:disabled .btn {
 
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
   }
 
   .md\:text-sm {

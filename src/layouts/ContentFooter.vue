@@ -1,5 +1,5 @@
 <template>
-  <v-container class="bg-gray-100 w-full mt-10 ft:w-full_imp p-0">
+  <v-container class="bg-gray-100 w-full ft:w-full_imp p-0">
     <v-row>
       <!-- Cột 1: Giới thiệu thương hiệu -->
       <v-col cols="12" sm="6" md="3" order="1" class="text-left pt-16 mt-3 md:mt-3 md:border-r-2 md:border-b-2 p-8">
@@ -7,15 +7,17 @@
         <p class="text-gray-700 text-sm">
           {{ brandDescription }}
         </p>
+
         <!-- Social Icons -->
         <div class="flex flex-wrap space-x-2 mt-4">
           <a v-for="icon in socialIcons" :key="icon.name" :href="icon.link" target="_blank" rel="noopener noreferrer"
             class="mx-2">
-            <v-btn icon variant="outlined" class="hover:bg-gray-400" x-small>
-              <v-icon class="text-base">{{ icon.name }}</v-icon>
+            <v-btn variant="outlined" class="hover:bg-gray-400 icon-social-btn" x-small>
+              <font-awesome-icon :icon="icon.name" class="text-base"></font-awesome-icon>
             </v-btn>
           </a>
         </div>
+
         <!-- Phương thức thanh toán -->
         <h4 class="text-base font-bold mt-4">{{ paymentTitle }}</h4>
         <div class="flex flex-wrap mt-2 space-x-2">
@@ -75,6 +77,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { faFacebook, faTwitter, faInstagram, faTiktok, faYoutube } from "@fortawesome/free-brands-svg-icons";
 
 // col-1
 // Tiêu đề và mô tả thương hiệu
@@ -96,11 +99,11 @@ const paymentMethods = ref([
 
 // Các biểu tượng mạng xã hội
 const socialIcons = ref([
-  { name: "mdi-facebook", link: "https://www.facebook.com" },
-  { name: "mdi-twitter", link: "https://www.twitter.com" },
-  { name: "mdi-instagram", link: "https://www.instagram.com" },
-  { name: "custom:tiktok", link: "https://www.tiktok.com" },
-  { name: "mdi-youtube", link: "https://www.youtube.com" }
+  { name: faFacebook, link: "https://www.facebook.com" },
+  { name: faTwitter, link: "https://www.twitter.com" },
+  { name: faInstagram, link: "https://www.instagram.com" },
+  { name: faTiktok, link: "https://www.tiktok.com" },
+  { name: faYoutube, link: "https://www.youtube.com" }
 ]);
 
 // col-2

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-550-px ct:h-400px ct:h-300-px transition-all duration-500 ease-in-out mt-26">
+  <div class="relative w-full h-550-px ct:h-400px ct:h-300-px transition-all duration-500 ease-in-out">
     <swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="1" :loop="true" :autoplay="{ delay: 5000 }"
       :pagination="{ el: '.swiper-pagination', clickable: true }"
       :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }" class="w-full h-full border-box">

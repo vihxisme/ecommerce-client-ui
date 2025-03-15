@@ -12,9 +12,12 @@
       <div class="w-full h-full flex items-end justify-center bg-cover object-cover overflow-hidden"
         @mouseover="isDisplayBtn = true" @mouseleave="isDisplayBtn = false">
 
+        <!-- <router-link> -->
         <div :style="{ backgroundImage: `url(${product.image})` }"
           class="w-full h-full bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5">
+          <router-link class="w-full h-full block"></router-link>
         </div>
+        <!-- </router-link> -->
 
         <!-- Nút thêm vào giỏ hàng & xem nhanh -->
         <div v-if="isDisplayBtn" class="absolute w-full bottom-3 left-3 flex justify-between items-center space-x-2">
@@ -56,9 +59,11 @@
     <!-- Thông tin sản phẩm -->
     <v-card-text class="relative flex-grow p-2">
       <div class="flex w-full justify-start items-center space-x-2 mt-1">
-        <h3 class="text-sm text-left capitalize mt-1 mx-2 clamp-2 overflow-hidden overflow-ellipsis">{{
-          product.name }}
-          - {{ textToUppercase(product.code) }}</h3>
+        <router-link>
+          <h3 class="text-sm text-left capitalize mt-1 mx-2 clamp-2 overflow-hidden overflow-ellipsis">{{
+            product.name }}
+            - {{ textToUppercase(product.code) }}</h3>
+        </router-link>
       </div>
 
       <!-- votes -->

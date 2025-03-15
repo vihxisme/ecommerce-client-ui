@@ -80,8 +80,8 @@
     </v-app-bar>
 
     <!-- Mobile Navigation Drawer -->
-    <v-navigation-drawer class="z-1150_imp top-0 h-screen bg-white" v-model="drawer" temporary :scrim="scrimColor"
-      @click:outside="onOutsideClick">
+    <v-navigation-drawer class="z-1150_imp top-0 h-auto bottom-0 bg-white" v-model="drawer" temporary
+      :scrim="scrimColor" @click:outside="onOutsideClick">
       <v-list>
         <div class="text-left flex items-center justify-between">
           <span class="block text-lg font-medium px-4 py-2 text-left">
@@ -150,7 +150,7 @@ const drawer = ref(false);
 const scrimColor = "rgba(0, 0, 0, 0.5)";
 
 const menuItems = ref([
-  { text: "Home", link: "/" },
+  { text: "Sản phẩm mới", link: "/products/new" },
   { text: "Pages", link: "/pages" },
   {
     text: "Shop",
