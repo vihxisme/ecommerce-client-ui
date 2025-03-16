@@ -1738,6 +1738,11 @@ select {
   border-color: rgba(249, 115, 22, var(--tw-border-opacity));
 }
 
+.hover\:border-orange-500:hover {
+  --tw-bg-opacity: 1;
+  border-color: rgba(249, 115, 22, var(--tw-bg-opacity));
+}
+
 .focus\:border-none:focus {
   --tw-border-opacity: 1;
   border-color: transparent;
@@ -3376,6 +3381,30 @@ select {
   top: 2.5rem;
 }
 
+.top-10p {
+  top: 10%;
+}
+
+.top-20p {
+  top: 20%;
+}
+
+.top-30p {
+  top: 30%;
+}
+
+.top-40p {
+  top: 40%;
+}
+
+.top-50p {
+  top: 50%;
+}
+
+.top-60p {
+  top: 60%;
+}
+
 .right-0 {
   right: 0px;
 }
@@ -3386,6 +3415,10 @@ select {
 
 .right-4\/5r {
   right: 0.8rem;
+}
+
+.right-1\/2r {
+  right: 0.5rem;
 }
 
 .right-1r {
@@ -3438,6 +3471,10 @@ select {
 
 .left-0 {
   left: 0px;
+}
+
+.left-1\/2r {
+  left: 0.5rem;
 }
 
 .left-4\/5r {
@@ -4217,6 +4254,14 @@ select {
   width: 50%;
 }
 
+.w-6\/10 {
+  width: 60%;
+}
+
+.w-7\/10 {
+  width: 70%;
+}
+
 .w-8\/10 {
   width: 80%;
 }
@@ -4348,6 +4393,11 @@ select {
 .transform-none {
   -webkit-transform: none;
   transform: none;
+}
+
+.translate-y-1\/2 {
+  --tw-translate-y: 50%;
+  transform: translateY(var(--tw-translate-y));
 }
 
 .rotate-45 {

@@ -1,5 +1,6 @@
 <template>
   <v-card class="relative flex flex-col w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
+    <ModalProduct :dialog="showModal" :product="product" @update:dialog="showModal = $event"></ModalProduct>
     <!-- Hình ảnh sản phẩm -->
     <div class="relative w-full h-7/10">
       <!-- Nhãn giảm giá -->
@@ -20,37 +21,32 @@
         <!-- </router-link> -->
 
         <!-- Nút thêm vào giỏ hàng & xem nhanh -->
-        <div v-if="isDisplayBtn" class="absolute w-full bottom-3 left-3 flex justify-between items-center space-x-2">
+        <div v-if="isDisplayBtn"
+          class="bp:hidden absolute w-full bottom-3 left-3 flex justify-between items-center space-x-2">
           <!-- Nút "Xem nhanh" -->
           <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
-            @mouseover="isHoveredQuickView = true" @mouseleave="isHoveredQuickView = false">
-            <!-- link route -->
-            <router-link>
-              <div v-if="isHoveredQuickView" class="group-hover:opacity-100 transition duration-300">
-                <!-- Text hiển thị khi hover -->
-                <span class="absolute z-200 bottom-4r left-0 bg-black text-white text-xs px-2 py-1 rounded">Xem
-                  nhanh
-                </span>
-                <span class="absolute z-100 bottom-3-7r left-4/5r w-5 h-5 bg-black rotate-45"></span>
-              </div>
-              <v-icon class="mdi mdi-eye-outline"></v-icon>
-            </router-link>
+            @mouseover="isHoveredQuickView = true" @mouseleave="isHoveredQuickView = false" @click="showModal = true">
+            <div v-if="isHoveredQuickView" class="group-hover:opacity-100 transition duration-300">
+              <!-- Text hiển thị khi hover -->
+              <span class="absolute z-200 bottom-4r left-0 bg-black text-white text-xs px-2 py-1 rounded">Xem
+                nhanh
+              </span>
+              <span class="absolute z-100 bottom-3-7r left-4/5r w-5 h-5 bg-black rotate-45"></span>
+            </div>
+            <v-icon class="mdi mdi-eye-outline"></v-icon>
           </v-btn>
 
           <!-- Nút "Thêm vào giỏ hàng" -->
           <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
-            @mouseover="isHoveredAddToCart = true" @mouseleave="isHoveredAddToCart = false">
-            <!-- link route -->
-            <router-link>
-              <div v-if="isHoveredAddToCart" class="group-hover:opacity-100 transition duration-300">
-                <!-- Text hiển thị khi hover -->
-                <span class="absolute z-200 bottom-4r right-0 bg-black text-white text-xs px-2 py-1 rounded">
-                  Thêm vào giỏ hàng
-                </span>
-                <span class="absolute z-100 bottom-3-7r right-4/5r w-5 h-5 bg-black rotate-45"></span>
-              </div>
-              <v-icon class="mdi mdi-cart-outline text-lg"></v-icon>
-            </router-link>
+            @mouseover="isHoveredAddToCart = true" @mouseleave="isHoveredAddToCart = false" @click="showModal = true">
+            <div v-if="isHoveredAddToCart" class="group-hover:opacity-100 transition duration-300">
+              <!-- Text hiển thị khi hover -->
+              <span class="absolute z-200 bottom-4r right-0 bg-black text-white text-xs px-2 py-1 rounded">
+                Thêm vào giỏ hàng
+              </span>
+              <span class="absolute z-100 bottom-3-7r right-4/5r w-5 h-5 bg-black rotate-45"></span>
+            </div>
+            <v-icon class="mdi mdi-cart-outline text-lg"></v-icon>
           </v-btn>
         </div>
       </div>
@@ -87,6 +83,7 @@
 
 <script setup>
 import { defineProps, ref } from 'vue';
+import ModalProduct from './ModalProduct.vue';
 
 // Nhận dữ liệu sản phẩm từ props
 defineProps({
@@ -95,6 +92,8 @@ defineProps({
     required: true
   }
 });
+
+const showModal = ref(false);
 
 // Biến hover độc lập cho từng nút
 const isHoveredQuickView = ref(false);
@@ -114,4 +113,10 @@ const handleMouseLeave = (event) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+@media (max-width: 1024px) {
+  .bp\:hidden {
+    display: none;
+  }
+}
+</style>
