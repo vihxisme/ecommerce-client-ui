@@ -50,6 +50,13 @@
           </v-btn>
         </div>
       </div>
+
+      <!-- Mobile: Giỏ hàng -->
+      <div class="lg:hidden absolute bottom-1/2r right-1/2r">
+        <font-awesome-icon :icon="faShoppingBag"
+          class="rounded-50 text-xl bg-white border border-orange-500 p-2 cursor-pointer"
+          @click="showModal = true"></font-awesome-icon>
+      </div>
     </div>
 
     <!-- Thông tin sản phẩm -->
@@ -84,6 +91,8 @@
 <script setup>
 import { defineProps, ref } from 'vue';
 import ModalProduct from './ModalProduct.vue';
+
+import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 
 // Nhận dữ liệu sản phẩm từ props
 defineProps({
