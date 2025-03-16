@@ -1,7 +1,7 @@
 <template>
   <!-- Routes name -->
   <v-card v-if="breadcrumbs.length" class="w-full block shadow-none bg-gray-200 p-0">
-    <v-card-text class="py-2 px-16 text-left text-xs text-gray-500">
+    <v-card-text class="py-2 text-left text-xs text-gray-500 bc:v-card-text">
       <span v-for="(breadcrumb, index) in breadcrumbs" :key="index">
         <span class="mx-2">{{ breadcrumb }}</span>
         <span v-if="index < breadcrumbs.length - 1">
@@ -31,3 +31,16 @@ const breadcrumbs = computed(() => {
   });
 });
 </script>
+
+<style lang="scss" scoped>
+.bc\:v-card-text {
+
+  padding-left: 4rem;
+  padding-right: 4rem;
+
+  @media (max-width: 768px) {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+</style>
