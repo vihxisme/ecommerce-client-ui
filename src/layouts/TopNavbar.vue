@@ -79,6 +79,16 @@
       </v-container>
     </v-app-bar>
 
+    <!-- Routes name -->
+    <v-card v-if="breadcrumbs.length" class="w-full shadow-none bg-gray-200 p-0">
+      <v-card-text class="py-2 px-16 text-left text-xs text-gray-500">
+        <span v-for="(breadcrumb, index) in breadcrumbs" :key="index">
+          <span class="mx-2">{{ breadcrumb }}</span>
+          <span v-if="index < breadcrumbs.length - 1"> / </span>
+        </span>
+      </v-card-text>
+    </v-card>
+
     <!-- Mobile Navigation Drawer -->
     <v-navigation-drawer class="z-1150_imp top-0 h-auto bottom-0 bg-white" v-model="drawer" temporary
       :scrim="scrimColor" @click:outside="onOutsideClick">
@@ -142,7 +152,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
 import { toggleScroll } from "@/utils/scrollUtil";
 
@@ -151,23 +162,47 @@ const scrimColor = "rgba(0, 0, 0, 0.5)";
 
 const menuItems = ref([
   { text: "Sản phẩm mới", link: "/products/new" },
-  { text: "Pages", link: "/pages" },
+  { text: "Giảm giá", link: "/products/promo" },
   {
-    text: "Shop",
+    text: "Áo",
+    link: "/products/shirt",
     children: [
-      { text: "Men", link: "/shop/men" },
-      { text: "Women", link: "/shop/women" },
-      { text: "Accessories", link: "/shop/accessories" },
+      { text: "Áo phông", link: "/products/shirt/t-shirt" },
+      { text: "Áo sơ mi", link: "/products/shirt/formal-shirt" },
+      { text: "Áo Polo", link: "/products/shirt/polo-shirt" },
+      { text: "Áo khoác", link: "/products/shirt/jacket" },
+      { text: "Áo Sweater", link: "/products/shirt/sweater" },
+      { text: "Áo len", link: "/products/shirt/wool-sweater" },
+      { text: "Áo Blazer", link: "/products/shirt/blazer" },
     ],
   },
   {
-    text: "Blog",
+    text: "Quần",
+    link: "/products/pants",
     children: [
-      { text: "Latest Posts", link: "/blog/latest" },
-      { text: "Trendy", link: "/blog/trendy" },
+      { text: "Quần Jean", link: "/products/pants/jeans" },
+      { text: "Quần Âu", link: "/products/pants/trousers" },
+      { text: "Quần short", link: "/products/pants/shorts" },
     ],
   },
+  { text: "Hệ thống cửa hàng", link: "/system-store" },
+  { text: "Ưu đãi", link: "/discount-promotion" }
 ]);
+
+const route = useRoute();
+
+const routeNameMap = {
+  "Home": "Trang chủ",
+  "New Product": "Sản phẩm mới"
+};
+
+const breadcrumbs = computed(() => {
+  if (route.name === "Home") return [];
+
+  return route.matched.map((matchRoute) => {
+    return matchRoute.name ? routeNameMap[matchRoute.name] : routeNameMap["Home"];
+  });
+});
 
 
 const onOutsideClick = () => {
