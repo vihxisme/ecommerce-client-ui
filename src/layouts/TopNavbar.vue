@@ -10,7 +10,7 @@
 
           <!-- Logo -->
           <router-link variant="text" to="/home"
-            class="text-2xl font-serif no-select font-extrabold hover:text-blue-600 cursor-pointer transition duration-300"
+            class="text-3xl font-serif no-select font-extrabold hover:text-blue-600 cursor-pointer transition duration-300"
             aria-label="Flatlogic">
             BELLION
           </router-link>
@@ -80,7 +80,7 @@
     </v-app-bar>
 
     <!-- Mobile Navigation Drawer -->
-    <v-navigation-drawer class="z-1150_imp top-0 h-auto bottom-0 bg-white" v-model="drawer">
+    <v-navigation-drawer class="z-1150_imp lg:hidden top-0 h-auto bottom-0 bg-white" v-model="drawer">
       <v-list>
         <div class="text-left flex items-center justify-between">
           <span class="block text-lg font-medium px-4 py-2 text-left">
