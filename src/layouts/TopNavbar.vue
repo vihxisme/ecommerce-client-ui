@@ -79,19 +79,8 @@
       </v-container>
     </v-app-bar>
 
-    <!-- Routes name -->
-    <v-card v-if="breadcrumbs.length" class="w-full shadow-none bg-gray-200 p-0">
-      <v-card-text class="py-2 px-16 text-left text-xs text-gray-500">
-        <span v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-          <span class="mx-2">{{ breadcrumb }}</span>
-          <span v-if="index < breadcrumbs.length - 1"> / </span>
-        </span>
-      </v-card-text>
-    </v-card>
-
     <!-- Mobile Navigation Drawer -->
-    <v-navigation-drawer class="z-1150_imp top-0 h-auto bottom-0 bg-white" v-model="drawer" temporary
-      :scrim="scrimColor" @click:outside="onOutsideClick">
+    <v-navigation-drawer class="z-1150_imp top-0 h-auto bottom-0 bg-white" v-model="drawer">
       <v-list>
         <div class="text-left flex items-center justify-between">
           <span class="block text-lg font-medium px-4 py-2 text-left">
@@ -147,13 +136,12 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
+    <!-- <v-overlay v-model="drawer" opacity="0.5" color="black" z-index="300"></v-overlay> -->
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref } from "vue";
 
 import { toggleScroll } from "@/utils/scrollUtil";
 
@@ -188,21 +176,6 @@ const menuItems = ref([
   { text: "Hệ thống cửa hàng", link: "/system-store" },
   { text: "Ưu đãi", link: "/discount-promotion" }
 ]);
-
-const route = useRoute();
-
-const routeNameMap = {
-  "Home": "Trang chủ",
-  "New Product": "Sản phẩm mới"
-};
-
-const breadcrumbs = computed(() => {
-  if (route.name === "Home") return [];
-
-  return route.matched.map((matchRoute) => {
-    return matchRoute.name ? routeNameMap[matchRoute.name] : routeNameMap["Home"];
-  });
-});
 
 
 const onOutsideClick = () => {
