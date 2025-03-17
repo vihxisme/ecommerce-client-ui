@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="localDialog" @update:model-value="handleClose" max-width="1000px">
+  <v-dialog v-model="localDialog" @update:model-value="handleClose" class="mp:v-dialog">
     <v-card class="w-full">
       <v-card-title class="fixed top-0 w-full bg-white flex justify-between items-center shadow-md z-100"
         style="border-radius: 4px;">
@@ -11,7 +11,7 @@
 
       <!-- Nội dung modal -->
       <v-row class="w-full p-4 m-0 mt-16 flex justify-center">
-        <v-col cols="12" md="6" class="w-full p-4">
+        <v-col cols="12" md="6" class="w-full p-4 mp:v-col">
           <!-- Hình ảnh sản phẩm -->
           <div class="relative group">
             <swiper @swiper="setMainSwiper" :modules="[Navigation, Thumbs]" :navigation="{
@@ -36,12 +36,16 @@
           <!-- Swiper danh sách hình nhỏ -->
           <div class="relative group mt-3">
             <swiper @swiper="setThumbSwiper" :modules="[Navigation, Thumbs]" :slides-per-view="6" :space-between="10"
-              :navigation="{
+              :breakpoints="{
+                0: { slidesPerView: 7, spaceBetween: 4 },
+                640: { slidesPerView: 8, spaceBetween: 8 },
+                960: { slidesPerView: 6, spaceBetween: 12 }
+              }" :navigation="{
                 nextEl: '.custom-next-slide',
                 prevEl: '.custom-prev-slide',
               }" watch-slides-progress class="thumbnail-swiper">
               <swiper-slide v-for="(image, index) in product.images" :key="index">
-                <v-img :src="image" width="60" height="60"
+                <v-img :src="image" width="60" height="80"
                   class="cursor-pointer border-2 border-gray-300 rounded-md hover:border-orange-500"
                   :class="{ 'border-orange-500': selectedImage === image }" @click="
                     selectedImage = image;
@@ -61,11 +65,11 @@
           </div>
         </v-col>
 
-        <v-col cols="12" md="6" class="w-full px-4 py-2">
+        <v-col cols="12" md="6" class="w-full px-4 py-2 mp:v-col">
           <!-- Thông tin sản phẩm -->
-          <v-card-text>
+          <v-card-text class="mp:v-card-text">
             <h3 class="text-xl font-semibold">{{ product.name }}</h3>
-            <p class="text-gray-500">Mã sản phẩm: <strong>{{ product.code }}</strong></p>
+            <p class="text-gray-500 py-2">Mã sản phẩm: <strong>{{ product.code }}</strong></p>
 
             <div class="py-2">
               <span>Tình trạng: Còn hàng</span>
@@ -74,44 +78,46 @@
             </div>
 
             <div class="bg-gray-100 py-2">
-              <span class="text-xl font-semibold mx-4"> Giá: </span>
-              <span class="mt-2 text-red-600 font-bold text-lg">{{ formatPrice(product.finalPrice) }}₫</span>
-              <span v-if="product.price" class="text-gray-400 text-lg line-through ml-2">
-                {{ formatPrice(product.price) }}₫
-              </span>
-              <span v-if="product.discount" class="bg-red-500 text-white px-2 py-1 text-xs rounded ml-2">
-                -{{ product.discount }}%
-              </span>
+              <div class="flex justify-between items-center mx-2 my-auto">
+                <span class="text-xl font-semibold"> Giá: </span>
+                <span class="ext-red-600 font-bold text-lg">{{ formatPrice(product.finalPrice) }}₫</span>
+                <span v-if="product.price" class="text-gray-400 text-lg line-through">
+                  {{ formatPrice(product.price) }}₫
+                </span>
+                <span v-if="product.discount" class="bg-red-500 text-white px-2 py-1 text-xs rounded">
+                  -{{ product.discount }}%
+                </span>
+              </div>
             </div>
           </v-card-text>
 
           <!-- Màu sắc -->
-          <v-card-text>
+          <v-card-text class="mp:v-card-text">
             <h4 class="text-sm font-semibold">Màu sắc:</h4>
-            <div>
+            <div class="text-xxs">
               <v-btn v-for="(color, index) in product.colors" :key="index" @click="selectedColor = color"
-                class="border border-gray-300 rounded-md mx-2 px-3 py-1 shadow-none"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }">
-                <span class="text-sm capitalize font-normal">{{ color }}</span>
+                class="border border-gray-300 rounded-md px-1 py-1 shadow-none mx-1/5 my-1/5"
+                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat>
+                <span class="capitalize font-normal">{{ color }}</span>
               </v-btn>
             </div>
           </v-card-text>
 
           <!-- Kích thước -->
-          <v-card-text>
-            <h4 class="text-xs font-semibold">Kích thước:</h4>
-            <div>
+          <v-card-text class="mp:v-card-text">
+            <h4 class="text-sm font-semibold">Kích thước:</h4>
+            <div class="text-xss">
               <v-btn v-for="(size, index) in product.sizes" :key="index" @click="selectedSize = size.name"
-                class="border border-gray-300 rounded-md mx-2 px-3 py-1 shadow-none"
+                class="border border-gray-300 rounded-md mx-1/5 my-1/5 px-1 py-1 shadow-none"
                 :class="{ 'border-blueGray-100 bg-blueGray-100': selectedSize === size.name }"
-                :disabled="!size.available">
-                <span class="text-xs capitalize font-normal">{{ size.name }}</span>
+                :disabled="!size.available" flat="">
+                <span class="capitalize font-normal">{{ size.name }}</span>
               </v-btn>
             </div>
           </v-card-text>
 
           <!-- Số lượng -->
-          <v-card-text class="flex items-center">
+          <v-card-text class="flex items-center mp:v-card-text">
             <h4 class="text-sm py-4 font-semibold">Số lượng:</h4>
             <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="2rem" height="2rem"
               @click="decreaseQuantity">
@@ -125,15 +131,15 @@
           </v-card-text>
 
           <!-- Nút Thêm vào giỏ -->
-          <v-card-action class="p-4">
-            <v-btn class="mt-6 bg-red-500 text-white font-bold py-2 px-16 rounded-md">
+          <div class="p-4">
+            <v-btn class="bg-red-500 w-full text-white font-bold py-2 my-6 rounded-md">
               Thêm vào giỏ hàng
             </v-btn>
-            <router-link class="py-2 px-8 mt-6 block underline hover:text-red-500">
-              <span class="mx-2">Xem chi tiết giỏ hàng</span>
+            <router-link class="py-2 mt-6block underline hover:text-red-500">
+              <span>Xem chi tiết giỏ hàng</span>
               <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
             </router-link>
-          </v-card-action>
+          </div>
         </v-col>
       </v-row>
     </v-card>
@@ -312,16 +318,46 @@ onMounted(() => {
     display: none;
   }
 
-  &:hover {
+  @media (min-width: 968px) {
 
-    .custom-next-img,
-    .custom-prev-img,
-    .custom-prev-slide,
-    .custom-next-slide {
-      display: flex;
+    &:hover {
+
+      .custom-next-img,
+      .custom-prev-img,
+      .custom-prev-slide,
+      .custom-next-slide {
+        display: flex;
+      }
     }
   }
 
+}
 
+.mp\:v-dialog {
+  ::v-deep(.v-overlay__content) {
+    max-width: 1000px;
+
+    @media (max-width: 968px) {
+      width: 100%;
+      margin: 0;
+      bottom: 0;
+      top: 10%;
+    }
+  }
+}
+
+.mp\:v-col,
+.mp\:v-card-text {
+  @media (max-width: 680px) {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+.mp\:v-card_action {
+  @media (max-width: 968px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 </style>
