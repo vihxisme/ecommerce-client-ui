@@ -1,20 +1,18 @@
 <template>
-  <div>
-    <!-- Header Top -->
-    <v-container class="fixed top-0 left-0 bg-deep-purple-darken-4 py-2 overflow-hidden z-100" fluid>
-      <v-row justify="center" align="center">
-        <v-col cols="10">
-          <div class="marquee">
-            <div class="marquee-inner">
-              <span class="text-white text-caption marquee-text">
-                {{ title_header }}
-              </span>
-            </div>
+  <!-- Header Top -->
+  <v-container class="hidden lg:block fixed top-0 left-0 bg-deep-purple-darken-4 py-2 overflow-hidden z-100" fluid>
+    <v-row justify="center" align="center">
+      <v-col cols="10">
+        <div class="marquee">
+          <div class="marquee-inner">
+            <span class="text-white text-caption marquee-text">
+              {{ title_header }}
+            </span>
           </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>

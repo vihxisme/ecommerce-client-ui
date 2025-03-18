@@ -22,6 +22,8 @@ import "@mdi/font/css/materialdesignicons.css";
 // SCSS Styles
 import "@/styles/index.scss";
 
+import "@/styles/style.css";
+
 // Khởi tạo Vue Router
 const router = createRouter({
   history: createWebHistory(),

@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-auto mt-26">
+  <div class="w-full h-auto mt-26 rps-mb:mt-14">
     <Banner></Banner>
     <CategoryList></CategoryList>
     <NewProductList></NewProductList>

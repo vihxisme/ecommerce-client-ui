@@ -1,6 +1,6 @@
 <template>
   <!-- Khối lớn bao phủ toàn bộ menu -->
-  <div class="w-full h-16 fixed top-5/2r bg-white left-0 xs:bg-gray-200 shadow-md z-100">
+  <div class="w-full h-16 fixed top-5/2r tnb:top-0 bg-white left-0 xs:bg-gray-200 shadow-md z-100">
     <!-- Menu Navigation -->
     <v-app-bar elevation="5" color="transparent" class="relative_imp max-w-screen-xl mx-auto">
       <v-container class="md:w-8/10 md:w-full h-full flex justify-center items-center mx-auto">
@@ -16,14 +16,18 @@
           </router-link>
 
           <!-- Search & Cart Icons (Mobile/Tablet) -->
-          <div class="flex items-center gap-4 lg:hidden">
-            <router-link class="mx-2 cursor-pointer" icon aria-label="Search"><v-icon
-                class="mdi mdi-magnify icon-hover text-3xl font-bold"></v-icon></router-link>
-            <router-link class="mx-2 cursor-pointer" icon aria-label="Cart">
-              <v-badge color="red" content="1" offset-x="0" offset-y="0">
-                <v-icon class="mdi mdi-cart-outline icon-hover text-3xl font-bold"></v-icon>
-              </v-badge>
-            </router-link>
+          <div class="lg:hidden">
+            <div class="flex justify-between items-center gap-4 my-auto">
+              <router-link class="cursor-pointer" icon aria-label="Search"><v-icon class="mdi mdi-magnify icon-hover"
+                  size="1.6rem"></v-icon></router-link>
+              <router-link class="cursor-pointer" icon aria-label="Cart">
+                <v-badge color="red" content="0" offset-x="0" offset-y="0">
+                  <v-icon class="mdi mdi-cart-outline icon-hover" size="1.6rem"></v-icon>
+                </v-badge>
+              </router-link>
+              <router-link class="cursor-pointer" icon aria-label="Account"><v-icon
+                  class="mdi mdi-account-outline icon-hover" size="1.6rem"></v-icon></router-link>
+            </div>
           </div>
 
           <!-- Menu Links (Nằm giữa) -->
@@ -208,5 +212,13 @@ const handleDrawerToggle = () => {
 
 .z-1100 {
   z-index: 1100;
+}
+
+.tnb\:top-0 {
+  top: 2.5rem;
+
+  @media (max-width: 1024px) {
+    top: 0;
+  }
 }
 </style>
