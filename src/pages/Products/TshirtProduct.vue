@@ -44,28 +44,7 @@
 
               <!-- Pagination -->
               <v-pagination v-model="pageNumber" :length="totalPage" :total-visible="5" @update:model-value="changePage"
-                class="flex justify-center gap-4 items-center p-4 m-4 np:v-pagination">
-                <template v-slot:prev="{ onClick }">
-                  <v-btn icon @click="onClick" class="px-2 py-2 bg-gray-300 hover:bg-black hover:text-white rounded-50"
-                    flat :disabled="pageNumber === 1">
-                    <v-icon>mdi-chevron-left</v-icon>
-                  </v-btn>
-                </template>
-
-                <template v-slot:item="{ page, isActive }">
-                  <v-btn v-if="page !== '...'" icon @click="pageNumber = page" flat
-                    class="px-2 py-2 rounded-md transition-colors rounded-50"
-                    :class="pageNumber === page || isActive ? 'bg-black text-white' : 'bg-gray-200 hover:bg-black hover:text-white'">
-                    {{ page }}
-                  </v-btn>
-                </template>
-
-                <template v-slot:next="{ onClick }">
-                  <v-btn icon @click="onClick" class="px-2 py-2 bg-gray-300 hover:bg-black hover:text-white rounded-md"
-                    flat :disabled="pageNumber === totalPage">
-                    <v-icon>mdi-chevron-right</v-icon>
-                  </v-btn>
-                </template>
+                class="flex justify-center gap-4 items-center p-4 m-4 np:v-pagination" variant="flat">
               </v-pagination>
             </v-container>
           </v-col>
@@ -76,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 import Breadcrumb from "@/components/Navigation/Breadcrumb.vue";
@@ -87,18 +66,18 @@ import image_insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
 
 const { lgAndDown, xlAndUp } = useDisplay();
 
-const pageTitle = ref("Sản phẩm mới");
+const pageTitle = ref("Sản phẩm áo phông");
 
 const filterTitle = ref("Bộ lọc");
 const showFilter = ref(false);
 
-const newProduct = ref({
+const tShirtProduct = ref({
   product: Array.from({ length: 40 }, () => ({
     image: image_insta6,
     discount: 20,
     colors: 5,
     sizes: 4,
-    name: "Áo len mới mới mới mới mới mới mới mới mới mới mới mới mới",
+    name: "Áo len mới siêu khuyến mãi",
     code: "EWCW008678670",
     price: 600000,
     finalPrice: 480000,
@@ -109,13 +88,13 @@ const newProduct = ref({
   totalElement: 255
 });
 
-const displayedProducts = ref([...newProduct.value.product]);
-const pageNumber = ref(newProduct.value.pageNumber);
-const totalPage = ref(newProduct.value.totalPage);
+const displayedProducts = ref([...tShirtProduct.value.product]);
+const pageNumber = ref(tShirtProduct.value.pageNumber);
+const totalPage = ref(tShirtProduct.value.totalPage);
 const loading = ref(false);
 
 // Kiểm tra còn dữ liệu để tải không
-const noMoreData = computed(() => displayedProducts.value.length >= newProduct.value.pageSize);
+const noMoreData = computed(() => displayedProducts.value.length >= tShirtProduct.value.pageSize);
 
 // Hàm gọi API (mock)
 const fetchMoreProducts = async () => {
@@ -136,14 +115,14 @@ const fetchMoreProducts = async () => {
     }));
 
     // Kiểm tra còn dữ liệu không trước khi thêm
-    if (displayedProducts.value.length + moreProducts.length >= newProduct.value.totalElement) {
-      displayedProducts.value.push(...moreProducts.slice(0, newProduct.value.totalElement - displayedProducts.value.length));
+    if (displayedProducts.value.length + moreProducts.length >= tShirtProduct.value.totalElement) {
+      displayedProducts.value.push(...moreProducts.slice(0, tShirtProduct.value.totalElement - displayedProducts.value.length));
     } else {
       displayedProducts.value.push(...moreProducts);
     }
 
     // Kiểm tra lại điều kiện dừng tải
-    if (displayedProducts.value.length >= newProduct.value.totalElement) {
+    if (displayedProducts.value.length >= tShirtProduct.value.totalElement) {
       loading.value = false; // Không còn dữ liệu để tải nữa
     } else {
       loading.value = false;
@@ -160,15 +139,33 @@ watch(pageNumber, () => {
 });
 
 // Chuyển trang bằng pagination
-const changePage = (newPage) => {
-  displayedProducts.value = [...newProduct.value.product]; // Reset danh sách
-  pageNumber.value = newPage;
+const changePage = async (newPage) => {
+  if (pageNumber.value !== newPage) {
+    pageNumber.value = newPage;
+    await nextTick(); // Chờ Vue cập nhật DOM
+  }
+
+  displayedProducts.value = [...tShirtProduct.value.product]; // Reset danh sách
 
   // Cuộn về đầu trang
   window.scrollTo({
     top: 0,
     behavior: "smooth", // Cuộn mượt
   });
+};
+
+const prevPage = (onClick) => {
+  if (pageNumber.value > 1) {
+    onClick();  // Gọi sự kiện mặc định của Vuetify
+    changePage(pageNumber.value - 1);
+  }
+};
+
+const nextPage = (onClick) => {
+  if (pageNumber.value < totalPage.value) {
+    onClick();  // Gọi sự kiện mặc định của Vuetify
+    changePage(pageNumber.value + 1);
+  }
 };
 
 const sortBy = ref("default");
@@ -236,7 +233,29 @@ watch(sortBy, () => {
     .v-btn {
       width: 2.5rem;
       border-radius: 50%;
-      // background-color: rgb(213, 213, 210);
+      --tw-bg-opacity: 1;
+      background-color: rgba(228, 228, 231, var(--tw-bg-opacity));
+
+      &:hover {
+        --tw-opacity: 1;
+        color: rgba(255, 255, 255, var(--tw-opacity));
+        background-color: rgba(0, 0, 0, var(--tw-opacity));
+      }
+
+      @media (max-width: 680px) {
+        font-size: 0.75rem;
+        line-height: 1rem;
+        width: 30px;
+        height: 38px;
+      }
+    }
+  }
+
+  ::v-deep(.v-pagination__item--is-active) {
+    >.v-btn {
+      --tw-opacity: 1;
+      color: rgba(255, 255, 255, var(--tw-opacity));
+      background-color: rgba(0, 0, 0, var(--tw-opacity));
     }
   }
 }
