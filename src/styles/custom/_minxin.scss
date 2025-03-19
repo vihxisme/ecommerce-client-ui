@@ -1,0 +1,28 @@
+@mixin slide-in-left-or-right($duration, $easing, $translate-start, $translate-end) {
+  animation: slideInLeftOrRight $duration $easing;
+
+  @keyframes slideInLeftOrRight {
+    0% {
+      transform: translateX($translate-start);
+    }
+
+    100% {
+      transform: translateX($translate-end);
+    }
+  }
+}
+
+
+@mixin slide-in-top-or-bottom($duration, $easing, $translate-start, $translate-end) {
+  animation: slideInTopOrBottom $duration $easing;
+
+  @keyframes slideInTopOrBottom {
+    0% {
+      transform: translateY($translate-start);
+    }
+
+    100% {
+      transform: translateY($translate-end);
+    }
+  }
+}
