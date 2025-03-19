@@ -19,10 +19,10 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 // Material Design Icons (MDI)
 import "@mdi/font/css/materialdesignicons.css";
 
+import "@/styles/style.css";
+
 // SCSS Styles
 import "@/styles/index.scss";
-
-import "@/styles/style.css";
 
 // Khởi tạo Vue Router
 const router = createRouter({

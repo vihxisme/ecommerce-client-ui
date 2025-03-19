@@ -1517,6 +1517,11 @@ select {
   background-color: rgba(185, 28, 28, var(--tw-bg-opacity));
 }
 
+.hover\:bg-black:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(0, 0, 0, var(--tw-bg-opacity));
+}
+
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(244, 244, 245, var(--tw-bg-opacity));
@@ -2348,6 +2353,31 @@ select {
 .font-bold {
   font-weight: 700;
 }
+
+.font-great-vibes {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-lobster {
+  font-family: 'Lobster', cursive;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
 
 .h-0 {
   height: 0px;
@@ -3926,6 +3956,11 @@ select {
   color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
+.hover\:text-white:hover {
+  --tw-bg-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
+
 .hover\:text-emerald-600:hover {
   --tw-text-opacity: 1;
   color: rgba(5, 150, 105, var(--tw-text-opacity));
@@ -4919,6 +4954,10 @@ select {
     order: 3;
   }
 
+  .lg\:my-0 {
+    margin: 0;
+  }
+
   .lg\:mb-0 {
     margin-bottom: 0px;
   }
@@ -4989,6 +5028,11 @@ select {
     --tw-shadow: 0 0 #0000;
     -webkit-box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  .lg\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .lg\:text-left {
