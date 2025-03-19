@@ -25,7 +25,20 @@ const route = useRoute();
 
 const routeNameMap = {
   "Home": "Trang chủ",
-  "New Product": "Sản phẩm mới"
+  "New Product": "Sản phẩm mới",
+  "Promo Product": "Sản phẩm khuyến mãi",
+  "Shirt": "Áo",
+  "T-shirt": "Áo phông",
+  "Formal-Shirt": "Áo sơ mi",
+  "Polo-Shirt": "Áo Polo",
+  "Jacket": "Áo khoác",
+  "Sweater": "Áo Sweater",
+  "Wool Sweater": "Áo len",
+  "Blazer": "Áo Blazer",
+  "Pants": "Quần",
+  "Jeans": "Quần Jean",
+  "Trousers": "Quần Âu",
+  "Shorts": "Quần short"
 };
 
 const breadcrumbs = computed(() => {
