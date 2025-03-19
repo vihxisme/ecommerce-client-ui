@@ -10,6 +10,10 @@ import JacketProduct from "@/pages/Products/JacketProduct.vue";
 import SweaterProduct from "@/pages/Products/SweaterProduct.vue";
 import WoolSweaterProduct from "@/pages/Products/WoolSweaterProduct.vue";
 import BlazerProduct from "@/pages/Products/BlazerProduct.vue";
+import PantsProduct from "@/pages/Products/PantsProduct.vue";
+import JeansProduct from "@/pages/Products/JeansProduct.vue";
+import TrousersProduct from "@/pages/Products/TrousersProduct.vue";
+import ShortsProduct from "@/pages/Products/ShortsProduct.vue";
 
 const routes = [
   {
@@ -71,6 +75,26 @@ const routes = [
         path: "products/shirt/blazer",
         name: "Blazer",
         component: BlazerProduct
+      },
+      {
+        path: "products/pants",
+        name: "Pants",
+        component: PantsProduct
+      },
+      {
+        path: "products/pants/jeans",
+        name: "Jeans",
+        component: JeansProduct
+      },
+      {
+        path: "products/pants/trousers",
+        name: "Trousers",
+        component: TrousersProduct
+      },
+      {
+        path: "products/pants/shorts",
+        name: "Shorts",
+        component: ShortsProduct
       }
     ],
   },
