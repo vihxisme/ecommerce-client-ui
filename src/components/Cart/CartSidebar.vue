@@ -10,7 +10,7 @@
         <v-icon class="hover:text-red-500 mx-2" @click="handleClose">mdi-close</v-icon>
       </v-toolbar>
 
-      <div class="flex-1 w-full p-2 scroll-y">
+      <div v-if="cartItems.length !== 0" class="flex-1 w-full p-2 scroll-y">
         <v-list>
           <v-list-item v-for="(item, index) in cartItems" :key="index" class="shadow-md border rounded-lg mb-2">
             <v-checkbox v-model="item.selected" :width="30" style="padding: 0; margin: 0; height: 40px;" color="success"
@@ -52,7 +52,20 @@
         </v-list>
       </div>
 
-      <div class="w-full bg-white px-4 py-4 border-t font-lobster">
+      <div v-if="cartItems.length === 0" class="flex-1 w-full p-2 font-lobster">
+        <V-img :src="emptyCart" class="p-8"></V-img>
+        <v-card-text>
+          <div class="w-full text-center">Chưa có sản phẩm nào trong giỏ hàng...😃🐷🐸</div>
+          <div class="my-4 px-4">
+            <router-link class="underline hover:text-red-500 text-left">
+              <span>Xem chi tiết giỏ hàng</span>
+              <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
+            </router-link>
+          </div>
+        </v-card-text>
+      </div>
+
+      <div v-if="cartItems.length !== 0" class="w-full bg-white px-4 py-4 border-t font-lobster">
         <v-card-text class="w-full mt-2 text-base flex justify-between items-center p-0">
           <h4 class="text-left capitalize font-semibold">Tổng tiền:</h4>
           <span class="font-semibold text-red-500">{{ formatPrice(totalPrice) }}₫</span>
@@ -71,6 +84,7 @@
 import { ref, watch, defineProps, defineEmits, computed } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
+import emptyCart from "@/assets/images/e-commerce/cart/empty-cart-pAeBGkae.svg";
 import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
 
 const { xs, sm, mdAndUp, lgAndUp } = useDisplay();
@@ -89,108 +103,110 @@ const props = defineProps({
   }
 });
 
-const cartItems = ref([
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO NỈ HỌA TIẾT IN LOGO GLORY FWTW012",
-    color: "Xanh đá đậm",
-    size: "S",
-    quantity: 4,
-    price: 450000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-]);
+const cartItems = ref([]);
+
+// const cartItems = ref([
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO NỈ HỌA TIẾT IN LOGO GLORY FWTW012",
+//     color: "Xanh đá đậm",
+//     size: "S",
+//     quantity: 4,
+//     price: 450000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+//   {
+//     image: insta1,
+//     code: "EDB30436464",
+//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+//     color: "Nâu nhạt",
+//     size: "S",
+//     quantity: 1,
+//     price: 549000,
+//     selected: false,
+//   },
+// ]);
 
 const totalPrice = computed(() => {
   return cartItems.value
