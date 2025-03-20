@@ -2939,6 +2939,18 @@ select {
   max-width: 210px;
 }
 
+.max-w-250-px {
+  max-width: 250px;
+}
+
+.max-w-300-px {
+  max-width: 300px;
+}
+
+.max-w-350-px {
+  max-width: 350px;
+}
+
 .max-w-580-px {
   max-width: 580px;
 }
@@ -3420,8 +3432,16 @@ select {
   position: sticky;
 }
 
+.top--1\/2r {
+  top: -0.5rem;
+}
+
 .top-0 {
   top: 0px;
+}
+
+.top-1\/4r {
+  top: 0.25rem;
 }
 
 .top-1\/2 {

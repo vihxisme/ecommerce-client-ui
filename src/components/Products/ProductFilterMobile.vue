@@ -1,42 +1,41 @@
 <template>
-  <v-overlay v-model="localDrawer" opacity="0.5" color="black" z-index="100" @click:outside="handleClose">
-    <v-navigarion-drawer v-model="localDrawer" @update:model-value="handleClose"
-      class="w-300-px fixed top-0 left-0 shadow-lg"
-      :class="{ 'slide-in-left': localDrawer, 'slide-in-right': !localDrawer }">
-      <v-card class="h-screen">
-        <v-card-title
-          class="px-8 py-4 text-2xl uppercase border-b shadow bg-gray-200 flex justify-between items-center">
-          <h2>{{ filterTitle }}</h2>
-          <v-icon size="1.5rem" class="hover:text-red-600" @click="handleClose">mdi-close</v-icon>
-        </v-card-title>
+  <!-- <v-overlay v-model="localDrawer" opacity="0.5" color="black" z-index="100" @click:outside="handleClose"> -->
+  <v-navigation-drawer v-model="localDrawer" @update:model-value="handleClose" :width="300"
+    class="w-300-px h-screen fixed top-0 left-0 shadow-lg"
+    :class="{ 'slide-in-left': localDrawer, 'slide-in-right': !localDrawer }">
+    <v-card class="h-screen">
+      <v-card-title class="px-8 py-4 text-2xl uppercase border-b shadow bg-gray-200 flex justify-between items-center">
+        <h2>{{ filterTitle }}</h2>
+        <v-icon size="1.5rem" class="hover:text-red-600" @click="handleClose">mdi-close</v-icon>
+      </v-card-title>
 
-        <v-list class="px-4 py-8">
-          <v-list-group v-model="isPriceRange" expand-icon="mdi-plus" collapse-icon="mdi-minus">
-            <template v-slot:activator="{ props }">
-              <v-list-item v-bind="props">
-                <v-list-item-title class="text-left text-base font-semibold">{{ priceRangeTitle }}</v-list-item-title>
-              </v-list-item>
-            </template>
-
-            <v-list-item class="pf:v-list-item__range-price">
-              <v-range-slider v-model="priceRange" :min="0" :max="10000000" :step="10" color="blue"
-                track-color="light-blue" thumb-color="red" thumb-label="always" class="px-2 py-8" ticks dense
-                @update:model-value="handlePriceChange">
-                <template v-slot:thumb-label="{ modelValue }">
-                  <span class="text-white">{{ formatPrice(modelValue) }}₫</span>
-                </template>
-              </v-range-slider>
+      <v-list class="px-4 py-8">
+        <v-list-group v-model="isPriceRange" expand-icon="mdi-plus" collapse-icon="mdi-minus">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props">
+              <v-list-item-title class="text-left text-base font-semibold">{{ priceRangeTitle }}</v-list-item-title>
             </v-list-item>
-          </v-list-group>
-        </v-list>
+          </template>
 
-        <div class="w-full absolute bottom-0 px-4 py-4 border-t flex justify-between items-center">
-          <v-btn class="border mx-2 flex-grow" flat>Lọc</v-btn>
-          <v-btn class="border mx-2 flex-grow" flat @click="handleClose">Hủy</v-btn>
-        </div>
-      </v-card>
-    </v-navigarion-drawer>
-  </v-overlay>
+          <v-list-item class="pf:v-list-item__range-price">
+            <v-range-slider v-model="priceRange" :min="0" :max="10000000" :step="10" color="blue"
+              track-color="light-blue" thumb-color="red" thumb-label="always" class="px-2 py-8" ticks dense
+              @update:model-value="handlePriceChange">
+              <template v-slot:thumb-label="{ modelValue }">
+                <span class="text-white">{{ formatPrice(modelValue) }}₫</span>
+              </template>
+            </v-range-slider>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+
+      <div class="w-full absolute bottom-0 px-4 py-4 border-t flex justify-between items-center">
+        <v-btn class="border mx-2 flex-grow" flat>Lọc</v-btn>
+        <v-btn class="border mx-2 flex-grow" flat @click="handleClose">Hủy</v-btn>
+      </div>
+    </v-card>
+  </v-navigation-drawer>
+  <!-- </v-overlay> -->
 </template>
 
 <script setup>
@@ -49,13 +48,25 @@ const props = defineProps({
   }
 });
 
+// const overlayVisible = ref(false);
+
 const emit = defineEmits(["update:priceRange", "update:drawer"]);
 
 const localDrawer = ref(false);
 
+// Lắng nghe sự thay đổi của trạng thái drawer
+// watch(localDrawer, (newValue) => {
+//   if (!newValue) {
+//     setTimeout(() => {
+//       overlayVisible.value = false;
+//     }, 3000);
+//   }
+// });
+
 // Đồng bộ `localDialog` với prop `dialog` qua watch
 watch(() => props.drawer, (newVal) => {
   localDrawer.value = newVal;
+  // overlayVisible.value = newVal;
 });
 
 // Emit sự kiện để báo với cha khi filter đóng
