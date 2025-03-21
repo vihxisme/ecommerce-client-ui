@@ -16,7 +16,7 @@
         <!-- <router-link> -->
         <div :style="{ backgroundImage: `url(${product.image})` }"
           class="w-full h-full bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5">
-          <router-link class="w-full h-full block"></router-link>
+          <router-link :to="prodDetailsRoute" class="w-full h-full block"></router-link>
         </div>
         <!-- </router-link> -->
 
@@ -101,6 +101,8 @@ defineProps({
     required: true
   }
 });
+
+const prodDetailsRoute = ref("/products/details")
 
 const showModal = ref(false);
 

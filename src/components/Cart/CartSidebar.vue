@@ -25,24 +25,24 @@
                   <v-img :src="item.image" :width="80" height="100"></v-img>
                 </div>
                 <div style="flex: 80%" class="text-left p-2">
-                  <h4>{{ item.name }} - {{ item.code }}</h4>
-                  <span>{{ item.color }}</span>
-                  <span class="mx-2">|</span>
-                  <span>{{ item.size }}</span>
+                  <h4 class="text-sm">{{ item.name }} - {{ item.code }}</h4>
+                  <span class="text-xxs font-semibold text-gray-500">{{ item.color }}</span>
+                  <span class="text-xxs font-semibold text-gray-500 mx-2">|</span>
+                  <span class="text-xxs font-semibold text-gray-500">{{ item.size }}</span>
                 </div>
               </div>
 
-              <div class="w-8/10 mr-0 ml-auto flex justify-between cs:sm-block">
-                <div>
+              <div class="w-8/10 my-2 px-2 mr-0 ml-auto flex justify-between cs:sm-block">
+                <div class="text-sm">
                   <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
                     @click="decreaseQuantity(index)">mdi-minus</v-icon>
                   <span class="mx-2">{{ item.quantity }}</span>
                   <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
                     @click="increaseQuantity(index)">mdi-plus</v-icon>
                 </div>
-                <div class="text-base">
-                  <span class="text-red-600 font-bold mx-2">{{ formatPrice(item.price) }}₫</span>
-                  <span v-if="item.price" class="text-gray-400 mx-2 line-through">
+                <div class="text-sm">
+                  <span class="text-red-600 font-bold mr-2">{{ formatPrice(item.price) }}₫</span>
+                  <span v-if="item.price" class="text-gray-400 ml-2 line-through">
                     {{ formatPrice(item.price) }}₫
                   </span>
                 </div>
@@ -56,12 +56,12 @@
         <V-img :src="emptyCart" class="p-8"></V-img>
         <v-card-text>
           <div class="w-full text-center">Chưa có sản phẩm nào trong giỏ hàng...😃🐷🐸</div>
-          <div class="my-4 px-4">
-            <router-link class="underline hover:text-red-500 text-left">
+          <!-- <div class="my-4 px-4">
+            <router-link to="/cart" class="underline hover:text-red-500 text-left">
               <span>Xem chi tiết giỏ hàng</span>
               <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
             </router-link>
-          </div>
+          </div> -->
         </v-card-text>
       </div>
 
@@ -71,10 +71,10 @@
           <span class="font-semibold text-red-500">{{ formatPrice(totalPrice) }}₫</span>
         </v-card-text>
         <v-btn class="bg-red-500 my-2 w-full text-white font-bold rounded-md" flat>Thanh toán</v-btn>
-        <router-link class="mb-2 block underline hover:text-red-500 text-left">
+        <!-- <router-link to="/cart" class="mb-2 block underline hover:text-red-500 text-left">
           <span>Xem chi tiết giỏ hàng</span>
           <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
-        </router-link>
+        </router-link> -->
       </div>
     </v-card>
   </v-navigation-drawer>
@@ -103,110 +103,110 @@ const props = defineProps({
   }
 });
 
-const cartItems = ref([]);
+// const cartItems = ref([]);
 
-// const cartItems = ref([
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO NỈ HỌA TIẾT IN LOGO GLORY FWTW012",
-//     color: "Xanh đá đậm",
-//     size: "S",
-//     quantity: 4,
-//     price: 450000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-//   {
-//     image: insta1,
-//     code: "EDB30436464",
-//     name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-//     color: "Nâu nhạt",
-//     size: "S",
-//     quantity: 1,
-//     price: 549000,
-//     selected: false,
-//   },
-// ]);
+const cartItems = ref([
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO NỈ HỌA TIẾT IN LOGO GLORY FWTW012",
+    color: "Xanh đá đậm",
+    size: "S",
+    quantity: 4,
+    price: 450000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+  {
+    image: insta1,
+    code: "EDB30436464",
+    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
+    color: "Nâu nhạt",
+    size: "S",
+    quantity: 1,
+    price: 549000,
+    selected: false,
+  },
+]);
 
 const totalPrice = computed(() => {
   return cartItems.value
@@ -276,31 +276,6 @@ const decreaseQuantity = (index) => {
   }
 }
 
-.cs\:v-navigation-drawer {
-
-  ::v-deep(.v-navigation-drawer) {
-
-    width: 50% !important;
-    max-width: 500px !important;
-
-    @media (max-width: 368px) {
-      width: 90% !important;
-      max-width: 320px !important;
-    }
-
-    @media (max-width: 768px) {
-      width: 60% !important;
-      max-width: 450px !important;
-    }
-
-    @media (max-width: 1024px) {
-      width: 50% !important;
-      max-width: 500px !important;
-    }
-
-  }
-}
-
 .scroll-y {
   overflow-y: auto;
 
@@ -330,7 +305,9 @@ const decreaseQuantity = (index) => {
 .cs\:sm-block {
   @media (max-width: 600px) {
     display: block;
+    width: 70%;
     text-align: left;
+    padding-left: 0.5rem;
   }
 }
 </style>

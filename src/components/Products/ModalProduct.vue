@@ -135,7 +135,7 @@
             <v-btn class="bg-red-500 w-full text-white font-bold py-2 my-6 rounded-md">
               Thêm vào giỏ hàng
             </v-btn>
-            <router-link class="py-2 mt-6block underline hover:text-red-500">
+            <router-link to="/cart" class="py-2 mt-6block underline hover:text-red-500">
               <span>Xem chi tiết giỏ hàng</span>
               <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
             </router-link>

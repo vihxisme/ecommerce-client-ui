@@ -14,6 +14,7 @@ import PantsProduct from "@/pages/Products/PantsProduct.vue";
 import JeansProduct from "@/pages/Products/JeansProduct.vue";
 import TrousersProduct from "@/pages/Products/TrousersProduct.vue";
 import ShortsProduct from "@/pages/Products/ShortsProduct.vue";
+import ProductDetails from "@/pages/Products/ProductDetails.vue";
 
 const routes = [
   {
@@ -95,6 +96,11 @@ const routes = [
         path: "products/pants/shorts",
         name: "Shorts",
         component: ShortsProduct
+      },
+      {
+        path: "products/details",
+        name: "Product Details",
+        component: ProductDetails
       }
     ],
   },
