@@ -1948,6 +1948,10 @@ select {
   display: flex;
 }
 
+.basic-1\/2 {
+  flex: 50%;
+}
+
 .inline-flex {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
@@ -3473,12 +3477,20 @@ select {
   top: 20%;
 }
 
+.top-25p {
+  top: 25%;
+}
+
 .top-30p {
   top: 30%;
 }
 
 .top-40p {
   top: 40%;
+}
+
+.top-45p {
+  top: 45%;
 }
 
 .top-50p {

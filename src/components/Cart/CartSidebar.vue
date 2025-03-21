@@ -17,7 +17,7 @@
               class="absolute top--1/2r left-0 cs:v-checkbox" ripple>
             </v-checkbox>
 
-            <v-icon class="absolute top-1/4r right-1/4r hover:text-red-500">mdi-close</v-icon>
+            <v-icon class="absolute cursor-pointer top-1/4r right-1/4r hover:text-red-500">mdi-delete-outline</v-icon>
 
             <v-card-text class="mt-8 p-0 m-0">
               <div class="flex justify-between">
@@ -87,7 +87,7 @@ import { useDisplay } from "vuetify/lib/framework.mjs";
 import emptyCart from "@/assets/images/e-commerce/cart/empty-cart-pAeBGkae.svg";
 import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
 
-const { xs, sm, mdAndUp, lgAndUp } = useDisplay();
+const { xs, sm, mdAndUp } = useDisplay();
 
 const drawerWidth = computed(() => {
   if (xs.value) return 300; // Kích thước nhỏ

@@ -25,11 +25,11 @@
             <!-- Custom Navigation Buttons -->
             <v-btn icon
               class="custom-prev-img absolute top-40p left-1/2r transform bg-gray-800/50 text-white p-2 rounded-full z-10 transition-all ease-linear">
-              <v-icon color="red" size="2rem">mdi-chevron-left</v-icon>
+              <v-icon color="red" size="2rem">mdi-arrow-left</v-icon>
             </v-btn>
             <v-btn icon
               class="custom-next-img absolute top-40p right-1/2r transform bg-gray-800/50 text-white p-2 rounded-full z-10 transition-all ease-linear">
-              <v-icon color="red" size="2rem">mdi-chevron-right</v-icon>
+              <v-icon color="red" size="2rem">mdi-arrow-right</v-icon>
             </v-btn>
           </div>
 
@@ -54,13 +54,13 @@
               </swiper-slide>
             </swiper>
             <!-- Custom Navigation Buttons -->
-            <v-btn min-width="1rem"
+            <v-btn min-width="0.5rem"
               class="custom-prev-slide px-2 absolute left-1/2r top-20p transform bg-gray-800/50 text-white rounded-full z-10 transition-all ease-linear">
-              <v-icon color="red" size="1.5rem">mdi-chevron-left</v-icon>
+              <v-icon color="red" size="1.5rem">mdi-arrow-left</v-icon>
             </v-btn>
-            <v-btn min-width="1rem"
+            <v-btn min-width="0.5rem"
               class="custom-next-slide px-2 absolute right-1/2r top-20p transform bg-gray-800/50 text-white rounded-full z-10 transition-all ease-linear">
-              <v-icon color="red" size="1.5rem">mdi-chevron-right</v-icon>
+              <v-icon color="red" size="1.5rem">mdi-arrow-right</v-icon>
             </v-btn>
           </div>
         </v-col>
@@ -135,7 +135,7 @@
             <v-btn class="bg-red-500 w-full text-white font-bold py-2 my-6 rounded-md">
               Thêm vào giỏ hàng
             </v-btn>
-            <router-link to="/cart" class="py-2 mt-6block underline hover:text-red-500">
+            <router-link to="/cart" class="py-2 mt-6 block underline hover:text-red-500">
               <span>Xem chi tiết giỏ hàng</span>
               <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
             </router-link>

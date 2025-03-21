@@ -1,6 +1,7 @@
 <template>
   <!-- Mobile Navigation Drawer -->
-  <v-navigation-drawer v-model="localDrawer" class="lg:hidden fixed top-0 h-screen bottom-0 bg-white" :width="300">
+  <v-navigation-drawer v-model="localDrawer"
+    class="lg:hidden fixed top-0 h-screen bottom-0 bg-white ms:v-navigation-drawer" :width="300">
     <v-list class="shadow-md">
       <div class="text-left flex items-center justify-between mx-2">
         <span class="block text-lg font-medium px-4 py-2 text-left">
@@ -44,15 +45,15 @@
     </v-list>
 
     <!-- Tài khoản (Chuyển xuống dưới trên mobile) -->
-    <v-list class="fixed bottom-0 bg-white_imp">
+    <!-- <v-list class="fixed bottom-0 bg-white_imp">
       <hr />
-      <v-list-item class="mt-auto hover:bg-gray-200"> <!-- mt-auto đẩy xuống cuối -->
+      <v-list-item class="mt-auto hover:bg-gray-200">
         <router-link class="flex items-center gap-2 text-lg px-4 py-2" to="/">
           <v-icon class="mdi mdi-account-circle text-2xl"></v-icon>
           <h4 style="margin-left: 10px;">Thông tin tài khoản</h4>
         </router-link>
       </v-list-item>
-    </v-list>
+    </v-list> -->
   </v-navigation-drawer>
 </template>
 
@@ -85,3 +86,28 @@ const handleClose = () => {
 };
 
 </script>
+
+<style lang="scss" scoped>
+.ms\:v-navigation-drawer {
+  ::v-deep(.v-navigation-drawer__content) {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    /* Tùy chỉnh thanh cuộn */
+    &::-webkit-scrollbar {
+      position: fixed !important;
+      width: 2px;
+      right: 0 !important;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+}
+</style>

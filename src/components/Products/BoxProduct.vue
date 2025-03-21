@@ -21,34 +21,33 @@
         <!-- </router-link> -->
 
         <!-- Nút thêm vào giỏ hàng & xem nhanh -->
-        <div v-if="isDisplayBtn"
-          class="bp:hidden absolute w-full bottom-3 left-3 flex justify-between items-center space-x-2">
-          <!-- Nút "Xem nhanh" -->
-          <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
-            @mouseover="isHoveredQuickView = true" @mouseleave="isHoveredQuickView = false" @click="showModal = true">
-            <div v-if="isHoveredQuickView" class="group-hover:opacity-100 transition duration-300">
-              <!-- Text hiển thị khi hover -->
-              <span class="absolute z-200 bottom-4r left-0 bg-black text-white text-xs px-2 py-1 rounded">Xem
-                nhanh
-              </span>
-              <span class="absolute z-100 bottom-3-7r left-4/5r w-5 h-5 bg-black rotate-45"></span>
-            </div>
-            <v-icon class="mdi mdi-eye-outline"></v-icon>
-          </v-btn>
+        <!-- Nút "Xem nhanh" -->
+        <v-btn v-if="isDisplayBtn" icon
+          class="bp:hidden absolute bottom-3 left-0 shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
+          @mouseover="isHoveredQuickView = true" @mouseleave="isHoveredQuickView = false" @click="showModal = true">
+          <div v-if="isHoveredQuickView" class="group-hover:opacity-100 transition duration-300">
+            <!-- Text hiển thị khi hover -->
+            <span class="absolute z-200 bottom-4r left-0 bg-black text-white text-xs px-2 py-1 rounded">Xem
+              nhanh
+            </span>
+            <span class="absolute z-100 bottom-3-7r left-4/5r w-5 h-5 bg-black rotate-45"></span>
+          </div>
+          <v-icon class="mdi mdi-eye-outline"></v-icon>
+        </v-btn>
 
-          <!-- Nút "Thêm vào giỏ hàng" -->
-          <v-btn icon class="relative shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
-            @mouseover="isHoveredAddToCart = true" @mouseleave="isHoveredAddToCart = false" @click="showModal = true">
-            <div v-if="isHoveredAddToCart" class="group-hover:opacity-100 transition duration-300">
-              <!-- Text hiển thị khi hover -->
-              <span class="absolute z-200 bottom-4r right-0 bg-black text-white text-xs px-2 py-1 rounded">
-                Thêm vào giỏ hàng
-              </span>
-              <span class="absolute z-100 bottom-3-7r right-4/5r w-5 h-5 bg-black rotate-45"></span>
-            </div>
-            <v-icon class="mdi mdi-cart-outline text-lg"></v-icon>
-          </v-btn>
-        </div>
+        <!-- Nút "Thêm vào giỏ hàng" -->
+        <v-btn v-if="isDisplayBtn" icon
+          class="bp:hidden absolute bottom-3 right-0 shadow-md mx-2 my-2 bg-transparent hover:bg-red-500 group"
+          @mouseover="isHoveredAddToCart = true" @mouseleave="isHoveredAddToCart = false" @click="showModal = true">
+          <div v-if="isHoveredAddToCart" class="group-hover:opacity-100 transition duration-300">
+            <!-- Text hiển thị khi hover -->
+            <span class="absolute z-200 bottom-4r right-0 bg-black text-white text-xs px-2 py-1 rounded">
+              Thêm vào giỏ hàng
+            </span>
+            <span class="absolute z-100 bottom-3-7r right-4/5r w-5 h-5 bg-black rotate-45"></span>
+          </div>
+          <v-icon class="mdi mdi-cart-outline text-lg"></v-icon>
+        </v-btn>
       </div>
 
       <!-- Mobile: Giỏ hàng -->

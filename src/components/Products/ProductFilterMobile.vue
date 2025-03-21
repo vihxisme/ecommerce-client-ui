@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-overlay v-model="localDrawer" opacity="0.5" color="black" z-index="100" @click:outside="handleClose"> -->
   <v-navigation-drawer v-model="localDrawer" @update:model-value="handleClose" :width="300"
     class="w-300-px h-screen fixed top-0 left-0 shadow-lg"
     :class="{ 'slide-in-left': localDrawer, 'slide-in-right': !localDrawer }">
@@ -35,7 +34,6 @@
       </div>
     </v-card>
   </v-navigation-drawer>
-  <!-- </v-overlay> -->
 </template>
 
 <script setup>
