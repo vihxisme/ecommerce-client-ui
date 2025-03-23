@@ -88,20 +88,21 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from 'vue';
+import { defineProps, ref, computed } from 'vue';
 import ModalProduct from './ModalProduct.vue';
 
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 
 // Nhận dữ liệu sản phẩm từ props
-defineProps({
+const props = defineProps({
   product: {
     type: Object,
     required: true
   }
 });
 
-const prodDetailsRoute = ref("/products/details")
+// Tạo đường dẫn động đến trang chi tiết sản phẩm
+const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.code}`);
 
 const showModal = ref(false);
 

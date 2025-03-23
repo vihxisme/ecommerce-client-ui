@@ -15,6 +15,7 @@ import JeansProduct from "@/pages/Products/JeansProduct.vue";
 import TrousersProduct from "@/pages/Products/TrousersProduct.vue";
 import ShortsProduct from "@/pages/Products/ShortsProduct.vue";
 import ProductDetails from "@/pages/Products/ProductDetails.vue";
+import OrderProduct from "@/pages/Order/OrderProduct.vue";
 
 const routes = [
   {
@@ -98,12 +99,17 @@ const routes = [
         component: ShortsProduct
       },
       {
-        path: "products/details",
+        path: "products/details/:productName",
         name: "Product Details",
         component: ProductDetails
       }
     ],
   },
+  {
+    path: "/order",
+    name: "OrderProduct",
+    component: OrderProduct
+  }
 ];
 
 export default routes;

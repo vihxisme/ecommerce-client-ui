@@ -4,7 +4,7 @@
 
     <v-container class="p-0" :class="{ 'v-container--fluid': xsAndDown, 'v-container': smAndUp }">
       <v-row class="w-full py-4 m-0 flex justify-center">
-        <v-col cols="12" md="5" class="w-full mp:v-col">
+        <v-col cols="12" md="5" xl="3" class="w-full mp:v-col">
           <!-- Hình ảnh sản phẩm -->
           <div class="relative group">
             <swiper @swiper="setMainSwiper" :modules="[Navigation, Thumbs]" :navigation="{
@@ -58,7 +58,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" md="7" class="w-full py-2 mp:v-col">
+        <v-col cols="12" md="7" xl="5" class="w-full py-2 mp:v-col">
           <!-- Thông tin sản phẩm -->
           <v-card-text class="mp:v-card-text text-left">
             <h3 class="text-xl font-semibold">{{ product.name }}</h3>
