@@ -16,6 +16,7 @@ import TrousersProduct from "@/pages/Products/TrousersProduct.vue";
 import ShortsProduct from "@/pages/Products/ShortsProduct.vue";
 import ProductDetails from "@/pages/Products/ProductDetails.vue";
 import OrderProduct from "@/pages/Order/OrderProduct.vue";
+import LoginPage from "@/pages/Login/LoginPage.vue";
 
 const routes = [
   {
@@ -109,6 +110,11 @@ const routes = [
     path: "/order",
     name: "OrderProduct",
     component: OrderProduct
+  },
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: LoginPage
   }
 ];
 

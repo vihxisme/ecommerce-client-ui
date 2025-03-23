@@ -19,7 +19,7 @@
             <v-list-item v-for="(item, index) in cartItems" :key="index" class="border rounded-lg mb-2">
               <v-card-text class="p-0 m-0">
                 <div class="flex justify-between gap-4">
-                  <div style="flex: 10%" class=" flex justify-between items-center">
+                  <div style="flex: 10%" class="flex justify-between items-center">
                     <v-img :src="item.image" :width="70" class="h-full"></v-img>
                   </div>
                   <div style="flex: 90%" class="text-left p-2">
