@@ -80,7 +80,7 @@
                   <v-icon class="mdi mdi-bell-outline icon-hover text-3xl font-bold"></v-icon>
                 </v-badge>
               </router-link>
-              <router-link class="mx-2 cursor-pointer" icon aria-label="Account"><v-icon
+              <router-link to="/login" class="mx-2 cursor-pointer" icon aria-label="Account"><v-icon
                   class="mdi mdi-account-outline icon-hover text-3xl font-bold"></v-icon></router-link>
             </div>
           </v-container>

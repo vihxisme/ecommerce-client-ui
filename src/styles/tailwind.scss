@@ -3508,6 +3508,10 @@ select {
   position: sticky;
 }
 
+.hover\:underline:hover {
+  text-decoration: underline;
+}
+
 .top--1\/2r {
   top: -0.5rem;
 }
@@ -5604,6 +5608,31 @@ fieldset:disabled .btn {
   border-color: var(--bs-btn-disabled-border-color);
   opacity: var(--bs-btn-disabled-opacity);
 }
+
+.bg-gradient-blue-green {
+  @include gradient(to right, #007BFF, #28A745);
+}
+
+.bg-gradient-red-orange {
+  @include gradient(to right, #FF5733, #FFC300);
+}
+
+.bg-gradient-purple-pink {
+  @include gradient(to right, #6A1B9A, #F06292);
+}
+
+.bg-gradient-teal-blue {
+  @include gradient(to right, #008080, #00BFFF);
+}
+
+.bg-gradient-yellow-green {
+  @include gradient(to right, #FFD700, #32CD32);
+}
+
+.bg-gradient-gray-black {
+  @include gradient(to right, #B0BEC5, #263238);
+}
+
 
 @media screen and (max-width: 800px) {
   .none-rep {
