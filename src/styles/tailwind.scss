@@ -1527,6 +1527,11 @@ select {
   background-color: rgba(244, 244, 245, var(--tw-bg-opacity));
 }
 
+.bg-gray-150 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+
 .bg-gray-200 {
   --tw-bg-opacity: 1;
   background-color: rgba(228, 228, 231, var(--tw-bg-opacity));
@@ -1711,6 +1716,11 @@ select {
 .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgba(212, 212, 216, var(--tw-border-opacity));
+}
+
+.border-black {
+  --tw-border-opacity: 1;
+  border-color: rgba(0, 0, 0, var(--tw-border-opacity));
 }
 
 .border-blueGray-50 {
@@ -2010,6 +2020,10 @@ select {
 
 .basic-1\/1 {
   flex: 100%;
+}
+
+.basic-7\/10 {
+  flex: 70%;
 }
 
 .basic-1\/2 {
@@ -2386,6 +2400,10 @@ select {
   flex-shrink: 1;
 }
 
+.grow-0 {
+  flex-grow: 0;
+}
+
 .float-right {
   float: right;
 }
@@ -2413,6 +2431,7 @@ select {
 .clear-none {
   clear: none;
 }
+
 
 .font-light {
   font-weight: 300;
@@ -4149,6 +4168,10 @@ select {
 
 .not-italic {
   font-style: normal;
+}
+
+.hover\:italic:hover {
+  font-style: italic;
 }
 
 .uppercase {

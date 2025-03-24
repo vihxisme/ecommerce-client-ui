@@ -39,7 +39,8 @@ const routeNameMap = {
   "Jeans": "Quần Jean",
   "Trousers": "Quần Âu",
   "Shorts": "Quần short",
-  "Product Details": "Chi tiết sản phẩm"
+  "Product Details": "Chi tiết sản phẩm",
+  "Of Customer": "Tài khoản của tôi"
 };
 
 const breadcrumbs = computed(() => {

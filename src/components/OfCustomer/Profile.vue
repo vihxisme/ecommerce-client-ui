@@ -1,31 +1,33 @@
 <template>
-  <v-card class="py-8 shadow-none">
-    <v-card-text>
+  <v-card class="py-8 shadow-none" color="transparent">
+    <v-card-title class="my-4 py-4 text-left border-b-2 border-black">
+      <h2 class="capitalize">Hồ sơ của tôi</h2>
+    </v-card-title>
+    <v-card-text class="mt-8">
       <v-row>
-        <v-col cols="12" md="8" order-md="1" order="2">
+        <v-col cols="12" md="9" order-md="1" order="2">
           <div class="gap-2 flex-mnw-768">
             <v-text-field label="Họ" class="grow p:v-text-field" outlined></v-text-field>
             <v-text-field label="Tên" class="grow p:v-text-field" outlined></v-text-field>
           </div>
           <div class="gap-2 flex-mnw-768">
-            <div class="basic-3/5">
-              <v-menu v-model="menu" :close-on-content-click="false" transition="scale-transition" max-width="290"
-                @click:outside="menu = false">
-                <template #activator="{ props }">
-                  <v-text-field :model-value="formattedDate" label="Ngày sinh" outlined readonly v-bind="props"
-                    class="p:v-text-field"></v-text-field>
-                </template>
-                <v-date-picker v-model="birthDate" @update:model-value="menu = false"></v-date-picker>
-              </v-menu>
-            </div>
-            <div class="gap-2 items-center basic-2/5">
-              <v-radio-group color="primary">
-                <div class="flex justify-center gap-6">
-                  <v-radio label="Nam" value="Male" class="inline-flex grow-0 p:v-radio"></v-radio>
-                  <v-radio label="Nữ" value="Female" class="inline-flex grow-0 p:v-radio"></v-radio>
-                </div>
-              </v-radio-group>
-            </div>
+            <v-menu v-model="menu" :close-on-content-click="false" transition="scale-transition" max-width="290"
+              @click:outside="menu = false">
+              <template #activator="{ props }">
+                <v-text-field :model-value="formattedDate" label="Ngày sinh" outlined readonly v-bind="props"
+                  class="p:v-text-field"></v-text-field>
+              </template>
+              <v-date-picker v-model="birthDate" @update:model-value="menu = false"></v-date-picker>
+            </v-menu>
+          </div>
+          <div class="gap-2 items-center">
+            <v-radio-group color="primary" label="Giới tính">
+              <div class="flex justify-start items-center gap-6">
+                <v-radio label="Nam" value="Male" class="inline-flex grow-0 p:v-radio"></v-radio>
+                <v-radio label="Nữ" value="Female" class="inline-flex grow-0 p:v-radio"></v-radio>
+                <v-radio label="Khác" value="Other" class="inline-flex grow-0 p:v-radio"></v-radio>
+              </div>
+            </v-radio-group>
           </div>
           <div class="gap-2 flex-mnw-768">
             <v-text-field label="Email" type="email" class="basic-3/5 p:v-text-field" outlined required></v-text-field>
@@ -50,7 +52,7 @@
               outlined></v-select>
           </div>
         </v-col>
-        <v-col cols="12" md="4" order-md="2" order="1">
+        <v-col cols="12" md="3" order-md="2" order="1">
           <!-- Avatar -->
           <v-avatar size="200" color="grey lighten-2">
             <v-img v-if="avatarUrl" :src="avatarUrl" />

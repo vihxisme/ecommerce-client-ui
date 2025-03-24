@@ -17,6 +17,7 @@ import ShortsProduct from "@/pages/Products/ShortsProduct.vue";
 import ProductDetails from "@/pages/Products/ProductDetails.vue";
 import OrderProduct from "@/pages/Order/OrderProduct.vue";
 import LoginPage from "@/pages/Login/LoginPage.vue";
+import OfCustomerPage from "@/pages/OfCustomer/OfCustomerPage.vue";
 
 const routes = [
   {
@@ -103,6 +104,11 @@ const routes = [
         path: "products/details/:productName",
         name: "Product Details",
         component: ProductDetails
+      },
+      {
+        path: "account/of-customer",
+        name: "Of Customer",
+        component: OfCustomerPage
       }
     ],
   },
