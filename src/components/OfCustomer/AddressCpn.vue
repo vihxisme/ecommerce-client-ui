@@ -1,21 +1,26 @@
 <template>
-  <v-card class="py-8 shadow-none" color="transparent">
-    <v-card-title class="my-4 py-4 text-left border-b-2 border-black">
-      <h2 class="capitalize">Địa chỉ</h2>
-    </v-card-title>
-    <div>
-      <BoxAddress v-for="(address, index) in addresses" :key="index" :address="address" />
-    </div>
-    <v-card-actions class="flex justify-end px-8 my-4">
-      <v-btn class="bg-primary px-4" prepend-icon="mdi-plus" color="white">Thêm địa chỉ</v-btn>
-    </v-card-actions>
-  </v-card>
+  <div>
+    <ModalAddress :dialog="showModal" @update:dialog="showModal = $event" />
+    <v-card class="py-8 shadow-none" color="transparent">
+      <v-card-title class="my-4 py-4 text-left border-b-2 border-black">
+        <h2 class="capitalize">Địa chỉ</h2>
+      </v-card-title>
+      <div>
+        <BoxAddress v-for="(address, index) in addresses" :key="index" :address="address" />
+      </div>
+      <v-card-actions class="flex justify-end px-8 my-4">
+        <v-btn class="bg-primary px-4" prepend-icon="mdi-plus" color="white" @click="showModal = true">Thêm địa
+          chỉ</v-btn>
+      </v-card-actions>
+    </v-card>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
 import BoxAddress from './BoxAddress.vue';
+import ModalAddress from './ModalAddress.vue';
 
 const addresses = ref([
   {
@@ -46,4 +51,6 @@ const addresses = ref([
     isDefault: false
   }
 ]);
+
+const showModal = ref(false);
 </script>
