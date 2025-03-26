@@ -1,5 +1,6 @@
 <template>
-  <v-dialog v-model="localDialog" @update:model-value="handleClose" class="ma:v-dialog">
+  <v-dialog v-model="localDialog" @update:model-value="handleClose" class="ma:v-dialog"
+    :class="{ 'slide-in-bottom': localDialog, 'slide-out-bottom': !localDialog }">
     <v-card>
       <v-card-title
         class="fixed rounded-t w-full bg-white top-0 border-b-2 shadow-md flex justify-between items-center py-4 z-100">
@@ -8,7 +9,7 @@
       </v-card-title>
       <v-card-text class="mt-16 pb-0">
         <v-text-field label="Họ và tên" class="p:v-text-field" outlined required></v-text-field>
-        <v-text-field label="Số điện thoại" class="p:v-text-field" outlined required></v-text-field>
+        <v-text-field label="Số điện thoại" type="tel" class="p:v-text-field" outlined required></v-text-field>
         <v-text-field label="Địa chỉ" class="p:v-text-field" outlined required></v-text-field>
         <v-select v-model="provincesOptions" :items="provinces" class="ma:v-text-field" label="Tỉnh / Thành"
           outlined></v-select>
@@ -73,7 +74,52 @@ const wardsOptions = ref(wards.value[0]);
       margin: 0;
       bottom: 0;
       top: 10%;
+      // animation: slide_in_bottom 0.5s ease;
+
+      &.slide-in-bottom {
+        animation: slide_in_bottom 0.5s ease;
+      }
+
+      &.slide-out-bottom {
+        animation: slide_out_bottom 0.5s ease;
+      }
+
+
+
     }
+
+    &.slide-in-bottom {
+      @media (max-width: 968px) {
+        animation: slide_in_bottom 0.5s ease;
+      }
+    }
+
+    &.slide-out-bottom {
+      @media (max-width: 968px) {
+        animation: slide_out_bottom 0.5s ease;
+      }
+    }
+  }
+}
+
+@keyframes slide_in_bottom {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+
+}
+
+@keyframes slide_out_bottom {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }
 

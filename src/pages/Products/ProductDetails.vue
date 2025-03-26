@@ -91,11 +91,11 @@
 
           <!-- Màu sắc -->
           <v-card-text class="mp:v-card-text text-left">
-            <h4 class="text-sm font-semibold">Màu sắc:</h4>
+            <h4 class="text-sm font-semibold py-4">Màu sắc:</h4>
             <div class="text-xxs">
               <v-btn v-for="(color, index) in product.colors" :key="index" @click="selectedColor = color"
                 class="border border-gray-300 rounded-md px-1 py-1 shadow-none mx-1/5 my-1/5"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat>
+                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat size="small">
                 <span class="capitalize font-normal">{{ color }}</span>
               </v-btn>
             </div>
@@ -103,12 +103,12 @@
 
           <!-- Kích thước -->
           <v-card-text class="mp:v-card-text text-left">
-            <h4 class="text-sm font-semibold">Kích thước:</h4>
+            <h4 class="text-sm font-semibold py-4">Kích thước:</h4>
             <div class="text-xss">
               <v-btn v-for="(size, index) in product.sizes" :key="index" @click="selectedSize = size.name"
                 class="border border-gray-300 rounded-md mx-1/5 my-1/5 px-1 py-1 shadow-none"
                 :class="{ 'border-blueGray-100 bg-blueGray-100': selectedSize === size.name }"
-                :disabled="!size.available" flat>
+                :disabled="!size.available" flat size="small">
                 <span class="capitalize font-normal">{{ size.name }}</span>
               </v-btn>
             </div>
@@ -116,7 +116,7 @@
 
           <!-- Số lượng -->
           <v-card-text class="flex items-center gap-2 p-0 text-left">
-            <h4 class="text-sm font-semibold ml-4 mr-8">Số lượng:</h4>
+            <h4 class="text-sm font-semibold ml-4 mr-8 my-4">Số lượng:</h4>
             <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="1.5rem" height="1.5rem"
               @click="decreaseQuantity" flat>
               <v-icon>mdi-minus</v-icon>

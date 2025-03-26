@@ -54,7 +54,7 @@
         </v-col>
         <v-col cols="12" md="3" order-md="2" order="1">
           <!-- Avatar -->
-          <v-avatar size="200" color="grey lighten-2">
+          <v-avatar :size="xsAndDown ? 100 : 150" color="grey lighten-2">
             <v-img v-if="avatarUrl" :src="avatarUrl" />
             <v-icon v-else size="100">mdi-account</v-icon>
           </v-avatar>
@@ -75,6 +75,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+const { xsAndDown } = useDisplay();
 
 const menu = ref(false);
 const birthDate = ref(null);

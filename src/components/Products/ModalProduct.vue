@@ -97,7 +97,7 @@
             <div class="text-xxs">
               <v-btn v-for="(color, index) in product.colors" :key="index" @click="selectedColor = color"
                 class="border border-gray-300 rounded-md px-1 py-1 shadow-none mx-1/5 my-1/5"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat>
+                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat size="small">
                 <span class="capitalize font-normal">{{ color }}</span>
               </v-btn>
             </div>
@@ -108,9 +108,9 @@
             <h4 class="text-sm font-semibold">Kích thước:</h4>
             <div class="text-xss">
               <v-btn v-for="(size, index) in product.sizes" :key="index" @click="selectedSize = size.name"
-                class="border border-gray-300 rounded-md mx-1/5 my-1/5 px-1 py-1 shadow-none"
+                class="border border-gray-300 rounded-md mx-1/5 my-1/5 shadow-none"
                 :class="{ 'border-blueGray-100 bg-blueGray-100': selectedSize === size.name }"
-                :disabled="!size.available" flat="">
+                :disabled="!size.available" flat size="small">
                 <span class="capitalize font-normal">{{ size.name }}</span>
               </v-btn>
             </div>
@@ -118,7 +118,7 @@
 
           <!-- Số lượng -->
           <v-card-text class="flex items-center mp:v-card-text">
-            <h4 class="text-sm py-4 font-semibold">Số lượng:</h4>
+            <h4 class="text-sm font-semibold">Số lượng:</h4>
             <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="2rem" height="2rem"
               @click="decreaseQuantity">
               <v-icon>mdi-minus</v-icon>
@@ -131,12 +131,12 @@
           </v-card-text>
 
           <!-- Nút Thêm vào giỏ -->
-          <div class="p-4">
-            <v-btn class="bg-red-500 w-full text-white font-bold py-2 my-6 rounded-md">
+          <div class="px-4">
+            <v-btn class="bg-red-500 w-full text-white font-bold rounded-md">
               Thêm vào giỏ hàng
             </v-btn>
-            <router-link to="/cart" class="py-2 mt-6 block underline hover:text-red-500">
-              <span>Xem chi tiết giỏ hàng</span>
+            <router-link :to="prodDetailsRoute" class="mt-2 block underline hover:text-red-500">
+              <span>Xem thông tin chi tiết</span>
               <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
             </router-link>
           </div>
@@ -147,7 +147,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, onMounted } from "vue";
+import { ref, watch, defineProps, defineEmits, onMounted, computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
@@ -172,6 +172,9 @@ import insta3 from "@/assets/images/e-commerce/home/insta3.jpg";
 import insta4 from "@/assets/images/e-commerce/home/insta4.jpg";
 import insta5 from "@/assets/images/e-commerce/home/insta5.jpg";
 import insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
+
+// Tạo đường dẫn động đến trang chi tiết sản phẩm
+const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.code}`);
 
 const product = {
   name: "Áo khoác da lộn basic cổ cao siêu xấu siêu không hợp siêu vỡ form siêu nát",
