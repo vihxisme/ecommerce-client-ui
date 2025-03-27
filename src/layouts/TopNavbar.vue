@@ -21,8 +21,8 @@
             <!-- Search & Cart Icons (Mobile/Tablet) -->
             <div class="lg:hidden">
               <div class="flex justify-between items-center gap-4 my-auto">
-                <router-link class="cursor-pointer" icon aria-label="Search"><v-icon class="mdi mdi-magnify icon-hover"
-                    size="1.6rem"></v-icon></router-link>
+                <div class="cursor-pointer" icon aria-label="Search" @click="isSearch = true"><v-icon
+                    class="mdi mdi-magnify icon-hover" size="1.6rem"></v-icon></div>
                 <div class="cursor-pointer">
                   <v-badge color="red" content="0" offset-x="0" offset-y="0">
                     <v-icon class="mdi mdi-cart-outline icon-hover" size="1.6rem" @click="isCart = true"></v-icon>
@@ -68,8 +68,8 @@
 
             <!-- Icons (Căn sát phải) -->
             <div class="hidden lg:flex gap-4 justify-center items-center h-full">
-              <router-link class="mx-2 cursor-pointer" icon aria-label="Search"><v-icon
-                  class="mdi mdi-magnify icon-hover text-3xl font-bold"></v-icon></router-link>
+              <div class="mx-2 cursor-pointer" icon aria-label="Search" @click="isSearch = true"><v-icon
+                  class="mdi mdi-magnify icon-hover text-3xl font-bold"></v-icon></div>
               <div class="mx-2 cursor-pointer">
                 <v-badge color="red" content="0" offset-x="0" offset-y="0">
                   <v-icon class="mdi mdi-cart-outline icon-hover text-3xl font-bold" @click="isCart = true"></v-icon>
@@ -87,9 +87,11 @@
         </v-container>
       </v-app-bar>
     </v-container>
-    <!-- Mobile Navigation Drawer -->
+
+    <!-- Expanded components -->
     <MenuSidebar :drawer="drawer" :menu-items="menuItems" @update:drawer="drawer = $event" />
     <CartSidebar :is-cart="isCart" @update:is-cart="isCart = $event" />
+    <SearchTopbar :is-search="isSearch" @update:is-search="isSearch = $event" />
   </div>
 </template>
 
@@ -100,9 +102,11 @@ import { toggleScroll } from "@/utils/scrollUtil";
 
 import MenuSidebar from "@/components/Navigation/MenuSidebar.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
+import SearchTopbar from "@/components/Search/SearchTopbar.vue";
 
 const drawer = ref(false);
 const isCart = ref(false);
+const isSearch = ref(false);
 
 const menuItems = ref([
   { text: "Sản phẩm mới", link: "/products/new" },
