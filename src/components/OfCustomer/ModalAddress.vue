@@ -8,14 +8,14 @@
         <v-icon class="hover:text-red-700" @click="handleClose">mdi-close</v-icon>
       </v-card-title>
       <v-card-text class="mt-16 pb-0">
-        <v-text-field label="Họ và tên" class="p:v-text-field" outlined required></v-text-field>
-        <v-text-field label="Số điện thoại" type="tel" class="p:v-text-field" outlined required></v-text-field>
-        <v-text-field label="Địa chỉ" class="p:v-text-field" outlined required></v-text-field>
+        <v-text-field label="Họ và tên" class="ma:v-text-field" outlined required></v-text-field>
+        <v-text-field label="Số điện thoại" type="tel" class="ma:v-text-field" outlined required></v-text-field>
+        <v-text-field label="Địa chỉ" class="ma:v-text-field" outlined required></v-text-field>
         <v-select v-model="provincesOptions" :items="provinces" class="ma:v-text-field" label="Tỉnh / Thành"
           outlined></v-select>
         <v-select v-model="districtsOptions" :items="districts" class="ma:v-text-field" label="Quận / Huyện"
           outlined></v-select>
-        <v-select v-model="wardsOptions" :items="wards" class="p:v-text-field" label="Phường / Xã" outlined></v-select>
+        <v-select v-model="wardsOptions" :items="wards" class="ma:v-text-field" label="Phường / Xã" outlined></v-select>
         <v-checkbox v-model="isDefault" label="Đặt làm địa chỉ mặc định" class="capitalize" color="success"
           hide-details></v-checkbox>
       </v-card-text>
@@ -65,6 +65,13 @@ const wardsOptions = ref(wards.value[0]);
 </script>
 
 <style lang="scss" scoped>
+.ma\:v-text-field {
+  ::v-deep(.v-field__input) {
+    padding-top: 1.5rem;
+    padding-bottom: 0;
+  }
+}
+
 .ma\:v-dialog {
   ::v-deep(.v-overlay__content) {
     max-width: 500px;

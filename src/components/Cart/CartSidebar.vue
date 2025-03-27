@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="localCart" @update:model-value="handleClose" :width="drawerWidth"
+  <v-navigation-drawer v-model="localCart" @update:model-value="handleClose" :width="drawerWidth" app
     class="h-screen fixed top-0 bottom-0 shadow-lg"
     :class="{ 'slide-in-left': !localCart, 'slide-in-right': localCart }" location="end" :temporary="true" scrim>
 
