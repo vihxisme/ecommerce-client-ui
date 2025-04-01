@@ -9,7 +9,7 @@
     <v-card-text class="relative rounded py-8 px-8 my-4">
       <v-container class="w-full p-2 mx-auto">
         <v-row>
-          <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-for="(product, index) in newProducts" :key="index"
+          <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-for="product in newProducts" :key="product.id"
             class="flex justify-center items-center">
             <div class="w-270-px h-400-px">
               <BoxProduct :product="product" />
@@ -31,25 +31,37 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import BoxProduct from "../Products/BoxProduct.vue";
-
-import image_insta3 from "@/assets/images/e-commerce/home/insta3.jpg";
+import { getNewProducts } from "@/services/apis/productService";
 
 const newProductsTitle = ref("Sản phẩm mới");
 const newProductsAction = ref("Xem tất cả sản phẩm mới");
 
-const newProducts = ref(
-  Array.from({ length: 12 }, () => ({
-    image: image_insta3,
-    discount: 20,
-    colors: 5,
-    sizes: 4,
-    name: "Áo len mới cứng xuất khẩu siêu bền siêu đẹp giặt siêu bẩn",
-    code: "EWCW008678670",
-    price: 600000,
-    finalPrice: 480000,
-  }))
-);
+const loading = ref(false);
+const newProducts = ref([]);
+const page = ref(1);
+const size = ref(16);
 
+const fetchNewProducts = async () => {
+  loading.value = true;
+  try {
+    const request = {
+      page: page.value - 1,
+      size: size.value,
+    };
+
+    const res = await getNewProducts(request);
+    newProducts.value = res.data.data.content;
+    console.log(res.data);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm mới:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchNewProducts();
+})
 </script>

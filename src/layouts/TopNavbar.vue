@@ -52,7 +52,8 @@
                   <v-list
                     class="no-select w-200-px shadow-lg bg-white text-xl rounded-md translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
                     @mouseenter="item.isOpen = true" @mouseleave="item.isOpen = false">
-                    <v-list-item v-for="child in item.children" :key="child.text" :to="child.link"
+                    <v-list-item v-for="child in item.children" :key="child.text"
+                      @click="handleMenuItemCategoryClick(child.id, child.link)"
                       class="block w-full text-left px-4 py-2 text-sm dropdown-item font-light font-serif hover:bg-gray-100">
                       {{ child.text }}
                     </v-list-item>
@@ -96,42 +97,39 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
+import { ref, onMounted, watchEffect, nextTick } from "vue";
+import { useRouter } from "vue-router";
 import { toggleScroll } from "@/utils/scrollUtil";
 
 import MenuSidebar from "@/components/Navigation/MenuSidebar.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import SearchTopbar from "@/components/Search/SearchTopbar.vue";
+import { useCategoryStore } from "@/stores/useCategory";
+
+const router = useRouter();
 
 const drawer = ref(false);
 const isCart = ref(false);
 const isSearch = ref(false);
 
+const categoryStore = useCategoryStore();
+
+onMounted(() => {
+  categoryStore.fetchCategories();
+})
+
 const menuItems = ref([
-  { text: "Sản phẩm mới", link: "/products/new" },
-  { text: "Giảm giá", link: "/products/promo" },
+  { text: "Sản phẩm mới", link: "/collections/new" },
+  { text: "Giảm giá", link: "/collections/onsale" },
   {
     text: "Áo",
-    link: "/products/shirt",
-    children: [
-      { text: "Áo phông", link: "/products/shirt/t-shirt" },
-      { text: "Áo sơ mi", link: "/products/shirt/formal-shirt" },
-      { text: "Áo Polo", link: "/products/shirt/polo-shirt" },
-      { text: "Áo khoác", link: "/products/shirt/jacket" },
-      { text: "Áo Sweater", link: "/products/shirt/sweater" },
-      { text: "Áo len", link: "/products/shirt/wool-sweater" },
-      { text: "Áo Blazer", link: "/products/shirt/blazer" },
-    ],
+    link: `/collections/${"ao"}-${"1"}`,
+    children: [],
   },
   {
     text: "Quần",
-    link: "/products/pants",
-    children: [
-      { text: "Quần Jean", link: "/products/pants/jeans" },
-      { text: "Quần Âu", link: "/products/pants/trousers" },
-      { text: "Quần short", link: "/products/pants/shorts" },
-    ],
+    link: `/collections/${"quan"}-${"2"}`,
+    children: [],
   },
   { text: "Hệ thống cửa hàng", link: "/system-store" },
   { text: "Ưu đãi", link: "/discount-promotion" }
@@ -147,6 +145,18 @@ const handleDrawerToggle = () => {
   toggleScroll(drawer.value); // Gọi hàm để ẩn hoặc hiện thanh cuộn
 };
 
+// Tự động cập nhật menu items khi categories thay đổi
+watchEffect(() => {
+  // Cập nhật danh sách các category cho menu áo/quần
+  menuItems.value.find((item) => item.text === "Áo").children = categoryStore.shirtCategories;
+  menuItems.value.find((item) => item.text === "Quần").children = categoryStore.pantsCategories;
+});
+
+const handleMenuItemCategoryClick = async (categoryId, route) => {
+  categoryStore.setSelectedCategory(categoryId);
+  await nextTick();
+  router.push(route);
+}
 </script>
 
 <style scoped>

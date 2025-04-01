@@ -19,9 +19,9 @@
           1921: { slidesPerView: 7, spaceBetween: 19 }
         }" :navigation="{ nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }"
           class="swiper-discounted-products relative w-full h-full py-8 pb-16 border-box">
-          <swiper-slide v-for="(category, index) in categories" :key="index" class="flex justify-center items-center">
+          <swiper-slide v-for="category in categories" :key="category.id" class="flex justify-center items-center">
             <div class="w-300-px h-400-px">
-              <Category :category="category" />
+              <Category :category="category" @selected-category="handleCategoryClick" />
             </div>
           </swiper-slide>
 
@@ -39,7 +39,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination } from "swiper/modules";
@@ -48,24 +49,24 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import Category from "@/components/Products/Category.vue";
+import { generateSlug } from "@/utils/slugify";
+import { useCategoryStore } from "@/stores/useCategory";
 
-
-import image_insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
-
+const router = useRouter();
 const { lgAndDown, xlAndUp } = useDisplay();
 
 const categoryTitle = ref("Danh mục sản phẩm");
-const categories = ref([
-  { name: "Áo phông", image: image_insta6, link: "" },
-  { name: "Áo len", image: image_insta6, link: "" },
-  { name: "Áo polo", image: image_insta6, link: "" },
-  { name: "Áo khoác", image: image_insta6, link: "" },
-  { name: "Áo Blazer", image: image_insta6, link: "" },
-  { name: "Áo sơ mi", image: image_insta6, link: "" },
-  { name: "Áo Sweater", image: image_insta6, link: "" },
-  { name: "Quần jean", image: image_insta6, link: "" },
-  { name: "Quần Âu", image: image_insta6, link: "" },
-  { name: "Quần thể thao", image: image_insta6, link: "" },
-  { name: "Quần short", image: image_insta6, link: "" },
-]);
+const categoryStore = useCategoryStore();
+const categories = computed(() => categoryStore.categories);
+
+onMounted(async () => {
+  await categoryStore.fetchCategories();
+  console.log("data: " + categories.value);
+})
+
+const handleCategoryClick = (id, name) => {
+  categoryStore.setSelectedCategory(id);
+  const categorySlug = categoryStore.getSlugByCategory(name);
+  router.push(`/collections/${categorySlug}`);
+};
 </script>

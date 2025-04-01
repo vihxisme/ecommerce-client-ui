@@ -4,21 +4,27 @@
     <!-- Hình ảnh sản phẩm -->
     <div class="relative w-full h-7/10">
       <!-- Nhãn giảm giá -->
-      <div v-if="product.discount"
+      <div v-if="product.discountPercentage"
         class="absolute top-10-px left-10-px bg-red-600 text-white text-xs px-2 py-1 rounded z-100">
-        -{{ product.discount }}%
+        -{{ product.discountPercentage }}%
       </div>
 
       <!-- Hình ảnh sản phẩm -->
       <div class="w-full h-full flex items-end justify-center bg-cover object-cover overflow-hidden"
         @mouseover="isDisplayBtn = true" @mouseleave="isDisplayBtn = false">
 
-        <!-- <router-link> -->
-        <div :style="{ backgroundImage: `url(${product.image})` }"
-          class="w-full h-full bg-cover bg-center transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5">
-          <router-link :to="prodDetailsRoute" class="w-full h-full block"></router-link>
+        <div
+          class="w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5 cursor-pointer"
+          @click="handleToRouteDetails">
+          <v-img :src="imageUrl" :lazy-src="image_error" gradient="to top, rgba(0,0,0,0.3), rgba(0,0,0,0)"
+            alt="Hình ảnh mô tả sản phẩm" cover>
+            <template v-slot:placeholder>
+              <v-row class="fill-height" align="center" justify="center">
+                <v-progress-circular indeterminate color="error"></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
         </div>
-        <!-- </router-link> -->
 
         <!-- Nút thêm vào giỏ hàng & xem nhanh -->
         <!-- Nút "Xem nhanh" -->
@@ -59,27 +65,26 @@
     </div>
 
     <!-- Thông tin sản phẩm -->
-    <v-card-text class="relative flex-grow p-2">
-      <div class="flex w-full justify-start items-center space-x-2 mt-1">
-        <router-link>
-          <h3 class="text-sm text-left capitalize mt-1 mx-2 clamp-2 overflow-hidden overflow-ellipsis">{{
-            product.name }}
-            - {{ textToUppercase(product.code) }}</h3>
-        </router-link>
+    <v-card-text class="relative flex flex-col flex-grow py-2 px-4">
+      <div class="flex w-full justify-start items-center space-x-2 mt-1 flex-grow cursor-pointer"
+        @click="handleToRouteDetails">
+        <h3 class="text-sm text-left capitalize mt-1 clamp-2 overflow-hidden overflow-ellipsis">{{
+          product.name }}
+          - {{ textToUppercase(product.productCode) }}</h3>
       </div>
 
       <!-- votes -->
-      <div class="flex w-full justify-start items-center py-2 mx-2">
+      <div class="flex w-full justify-start items-center flex-grow">
         <v-icon v-for="(item, index) in 5" :key="index" class="mdi mdi-star" size="16px" color="#DAA520"></v-icon>
       </div>
 
 
       <!-- Giá -->
-      <div class="flex w-full justify-between items-center">
-        <span v-if="product.finalPrice" class="text-red-500 text-left text-sm font-bold mx-2">{{
+      <div class="flex w-full justify-between items-center flex-grow">
+        <span v-if="product.finalPrice" class="text-red-500 text-left text-sm font-bold">{{
           formatPrice(product.finalPrice)
         }}₫</span>
-        <span v-if="product.price" class="text-gray-400 text-sm line-through font-bold mx-2">{{
+        <span v-if="product.price" class="text-gray-400 text-sm line-through font-bold">{{
           formatPrice(product.price)
         }}₫</span>
       </div>
@@ -90,8 +95,14 @@
 <script setup>
 import { defineProps, ref, computed } from 'vue';
 import ModalProduct from './ModalProduct.vue';
+import { useRouter } from 'vue-router';
+import { getCloudinaryUrl } from '@/utils/cloudinary';
 
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+
+import image_error from '@/assets/images/e-commerce/404/image_error.png';
+
+const router = useRouter();
 
 // Nhận dữ liệu sản phẩm từ props
 const props = defineProps({
@@ -102,7 +113,7 @@ const props = defineProps({
 });
 
 // Tạo đường dẫn động đến trang chi tiết sản phẩm
-const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.code}`);
+const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.productCode}`);
 
 const showModal = ref(false);
 
@@ -122,6 +133,12 @@ const handleMouseLeave = (event) => {
   const isLeaving = !event.currentTarget.contains(event.relatedTarget);
   if (isLeaving) isDisplayBtn.value = false;
 };
+
+const imageUrl = computed(() => getCloudinaryUrl(props.product.productImageUrl));
+
+const handleToRouteDetails = () => {
+  router.push(`/products/details/${props.product.name}-${props.product.productCode}`);
+}
 </script>
 
 <style scoped>

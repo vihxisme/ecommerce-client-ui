@@ -12,13 +12,18 @@ module.exports = {
     },
   },
   devServer: {
-    port: parseInt(process.env.VUETIFY_APP_PORT) || 8080,
+    port: parseInt(process.env.VUE_APP_PORT) || 8080,
     proxy: {
       '/api': {
-        target: process.env.VUETIFY_APP_API_URL || 'http://localhost:8888',
+        target: process.env.VUE_APP_API_URL || 'http://localhost:8888',
         changeOrigin: true,
-        pathRewrite: (path) => path.replace(/^\/api/, ''),
-      }
+        // pathRewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      // '/ws/product': {
+      //   target: process.env.VUE_APP_WS_URL || 'ws://localhost:8888/ws',
+      //   ws: true,
+      //   changeOrigin: true,
+      // }
     }
   }
 };

@@ -43,12 +43,12 @@ const bestSellingProductsAction = ref("Xem tất cả sản phẩm");
 
 const bestSellingProducts = ref(
   Array.from({ length: 12 }, () => ({
-    image: image_insta6,
-    discount: 20,
+    productImageUrl: image_insta6,
+    discountPercentage: 20,
     colors: 5,
     sizes: 4,
     name: "Áo len mới cứng bán siêu chạy siêu chạy",
-    code: "EWCW008678670",
+    productCode: "EWCW008678670",
     price: 600000,
     finalPrice: 480000,
   }))

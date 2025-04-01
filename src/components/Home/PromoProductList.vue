@@ -9,7 +9,7 @@
 
       <!-- nội dung -->
       <v-card-text class="relative bg-gray-200 rounded py-8 px-8 my-4">
-        <swiper :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="6" :loop="true"
+        <swiper :ref="swiperRef" :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="6" :loop="true"
           :autoplay="{ delay: 5000 }" :breakpoints="{
             0: { slidesPerView: 1, spaceBetween: 4 },
             640: { slidesPerView: 2, spaceBetween: 8 },
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
@@ -61,25 +61,49 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+import { getPromoProduct } from "@/services/apis/productService";
+
 import BoxProduct from "../Products/BoxProduct.vue";
 
-import image_center from "@/assets/images/e-commerce/details/1-center.png";
-
 const { lgAndDown, xlAndUp } = useDisplay();
+
+const swiperRef = ref(null);
 
 const promoProductTitle = ref("Sản phẩm khuyến mãi");
 const promoProductAction = ref("Xem tất cả sản phẩm khuyến mãi");
 
-const promoProducts = ref(
-  Array.from({ length: 15 }, () => ({
-    image: image_center,
-    discount: 50,
-    colors: 5,
-    sizes: 4,
-    name: "Áo khoác gió 1 lớp mũ liền siêu siêu siêu giữ form",
-    code: "EWCW007",
-    price: 500000,
-    finalPrice: 349000,
-  }))
-);
+const loading = ref(false);
+const promoProducts = ref([]);
+const page = ref(1);
+const size = ref(15);
+
+const fetchProducts = async () => {
+  loading.value = true;
+  try {
+    const request = {
+      page: page.value - 1,
+      size: size.value,
+    };
+
+    const res = await getPromoProduct(request);
+    promoProducts.value = res.data.data.content; // giả sử backend trả về content, totalElements, ...
+    console.log(res.data);
+
+    // ✅ Bắt Swiper autoplay lại
+    await nextTick();
+    setTimeout(() => {
+      if (swiperRef.value?.swiper) {
+        swiperRef.value.swiper.autoplay.start(); // Khởi động autoplay
+      }
+    }, 1000);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm khuyến mãi:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchProducts();
+})
 </script>

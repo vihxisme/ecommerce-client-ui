@@ -27,45 +27,22 @@
                 </div>
               </v-container>
               <v-row>
-                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="(prod, index) in displayedProducts" :key="index"
+                <!-- Infinite Scroll -->
+                <!-- <v-infinite-scroll @load="fetchMoreProducts">
+                  <v-progress-circular indeterminate color="success"></v-progress-circular>
+                </v-infinite-scroll> -->
+                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="product in newProducts" :key="product.id"
                   class="flex justify-center items-center">
                   <div class="w-250-px h-400-px">
-                    <BoxProduct :product="prod" />
+                    <BoxProduct :product="product" />
                   </div>
                 </v-col>
               </v-row>
 
-              <!-- Infinite Scroll -->
-              <v-infinite-scroll @load="fetchMoreProducts">
-                <div class="text-center" v-if="loading">
-                  <v-progress-circular indeterminate :value="100" color="success"></v-progress-circular>
-                </div>
-              </v-infinite-scroll>
-
               <!-- Pagination -->
-              <v-pagination v-model="pageNumber" :length="totalPage" :total-visible="5" @update:model-value="changePage"
-                class="flex justify-center gap-4 items-center p-4 m-4 np:v-pagination">
-                <template v-slot:prev="{ onClick }">
-                  <v-btn icon @click="onClick" class="px-2 py-2 bg-gray-300 hover:bg-black hover:text-white rounded-50"
-                    flat :disabled="pageNumber === 1">
-                    <v-icon>mdi-chevron-left</v-icon>
-                  </v-btn>
-                </template>
-
-                <template v-slot:item="{ page, isActive }">
-                  <v-btn v-if="page !== '...'" icon @click="pageNumber = page" flat
-                    class="px-2 py-2 rounded-md transition-colors rounded-50"
-                    :class="pageNumber === page || isActive ? 'bg-black text-white' : 'bg-gray-200 hover:bg-black hover:text-white'">
-                    {{ page }}
-                  </v-btn>
-                </template>
-
-                <template v-slot:next="{ onClick }">
-                  <v-btn icon @click="onClick" class="px-2 py-2 bg-gray-300 hover:bg-black hover:text-white rounded-md"
-                    flat :disabled="pageNumber === totalPage">
-                    <v-icon>mdi-chevron-right</v-icon>
-                  </v-btn>
-                </template>
+              <v-pagination v-if="totalPages > 1" v-model="pageNumber" :length="totalPages" size="small" color="black"
+                active-color="success" rounded="circle" :total-visible="5" @update:model-value="changePage"
+                class="flex justify-center gap-4 items-center p-4 m-4">
               </v-pagination>
             </v-container>
           </v-col>
@@ -76,14 +53,15 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 import Breadcrumb from "@/components/Navigation/Breadcrumb.vue";
 import ProductFilter from "@/components/Products/ProductFilter.vue";
 import ProductFilterMobile from "@/components/Products/ProductFilterMobile.vue";
 import BoxProduct from "@/components/Products/BoxProduct.vue";
-import image_insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
+
+import { getNewProducts } from "@/services/apis/productService";
 
 const { lgAndDown, xlAndUp } = useDisplay();
 
@@ -92,64 +70,36 @@ const pageTitle = ref("Sản phẩm mới");
 const filterTitle = ref("Bộ lọc");
 const showFilter = ref(false);
 
-const newProduct = ref({
-  product: Array.from({ length: 40 }, () => ({
-    image: image_insta6,
-    discount: 20,
-    colors: 5,
-    sizes: 4,
-    name: "Áo len mới mới mới mới mới mới mới mới mới mới mới mới mới",
-    code: "EWCW008678670",
-    price: 600000,
-    finalPrice: 480000,
-  })),
-  pageNumber: 1,
-  pageSize: 40,
-  totalPage: 10,
-  totalElement: 255
-});
-
-const displayedProducts = ref([...newProduct.value.product]);
-const pageNumber = ref(newProduct.value.pageNumber);
-const totalPage = ref(newProduct.value.totalPage);
+const newProducts = ref([]);
+const pageNumber = ref(1);
+const pageSize = ref(16);
+const totalPages = ref();
+const totalElements = ref();
 const loading = ref(false);
 
-// Kiểm tra còn dữ liệu để tải không
-const noMoreData = computed(() => displayedProducts.value.length >= newProduct.value.pageSize);
-
-// Hàm gọi API (mock)
-const fetchMoreProducts = async () => {
-  if (loading.value || noMoreData.value) return;
-
+const fetchNewProducts = async () => {
   loading.value = true;
+  try {
+    const request = {
+      page: pageNumber.value - 1,
+      size: pageSize.value,
+    };
 
-  setTimeout(() => {
-    const moreProducts = Array.from({ length: 25 }, () => ({
-      image: image_insta6,
-      discount: 20,
-      colors: 5,
-      sizes: 4,
-      name: "Lợn cưới áo mới",
-      code: `EWCW008678670-${Math.random()}`,
-      price: 600000,
-      finalPrice: 480000,
-    }));
-
-    // Kiểm tra còn dữ liệu không trước khi thêm
-    if (displayedProducts.value.length + moreProducts.length >= newProduct.value.totalElement) {
-      displayedProducts.value.push(...moreProducts.slice(0, newProduct.value.totalElement - displayedProducts.value.length));
-    } else {
-      displayedProducts.value.push(...moreProducts);
-    }
-
-    // Kiểm tra lại điều kiện dừng tải
-    if (displayedProducts.value.length >= newProduct.value.totalElement) {
-      loading.value = false; // Không còn dữ liệu để tải nữa
-    } else {
-      loading.value = false;
-    }
-  }, 1000); // Giả lập gọi API
+    const res = await getNewProducts(request);
+    newProducts.value = res.data.data.content;
+    totalPages.value = res.data.data.totalPages;
+    totalElements.value = res.data.data.totalElements;
+    console.log(res.data);
+  } catch (error) {
+    console.error("Lỗi khi lấy sản phẩm khuyến mãi:", error);
+  } finally {
+    loading.value = false;
+  }
 };
+
+onMounted(() => {
+  fetchNewProducts();
+})
 
 // cuộn lên đầu trang
 watch(pageNumber, () => {
@@ -161,8 +111,8 @@ watch(pageNumber, () => {
 
 // Chuyển trang bằng pagination
 const changePage = (newPage) => {
-  displayedProducts.value = [...newProduct.value.product]; // Reset danh sách
   pageNumber.value = newPage;
+  fetchNewProducts();
 
   // Cuộn về đầu trang
   window.scrollTo({
@@ -186,7 +136,7 @@ const sort = ref([
 
 // Hàm sắp xếp
 const sortProducts = () => {
-  displayedProducts.value.sort((a, b) => {
+  newProducts.value.sort((a, b) => {
     switch (sortBy.value) {
       case "price_asc":
         return a.finalPrice - b.finalPrice; // Giá tăng dần
@@ -197,9 +147,9 @@ const sortProducts = () => {
       case "name_desc":
         return b.name.localeCompare(a.name); // Z-A
       case "oldest":
-        return a.code.localeCompare(b.code); // Giả lập sản phẩm cũ nhất
+        return a.createdAt.localeCompare(b.createdAt); // Giả lập sản phẩm cũ nhất
       case "newest":
-        return b.code.localeCompare(a.code); // Giả lập sản phẩm mới nhất
+        return b.createdAt.localeCompare(a.createdAt); // Giả lập sản phẩm mới nhất
       default:
         return 0; // Không sắp xếp (Mặc định)
     }

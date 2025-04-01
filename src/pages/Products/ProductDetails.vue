@@ -157,15 +157,6 @@
         </v-tabs>
 
         <!-- Tab Content -->
-        <!-- <v-tabs-items v-model="activeTab" class="transition duration-300 ease-in-out">
-        <v-tab-item v-for="(tab, index) in tabs" :key="index">
-          <div class="p-4">
-            <h2 class="font-bold text-xl mb-2">{{ tab.label }}</h2>
-            <p v-html="tab.content"></p>
-          </div>
-        </v-tab-item>
-      </v-tabs-items> -->
-
         <div class="p-4 text-left">
           <div :class="{ 'line-clamp': !expanded }" ref="contentRef">
             <!-- <h2 class="font-bold text-xl mb-2">{{ tabs[activeTab]?.label }}</h2> -->

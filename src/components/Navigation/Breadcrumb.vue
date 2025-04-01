@@ -18,10 +18,13 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import { useCategoryStore } from "@/stores/useCategory";
 
 const { lgAndDown, xlAndUp } = useDisplay();
 
 const route = useRoute();
+
+const categoryStore = useCategoryStore();
 
 const routeNameMap = {
   "Home": "Trang chủ",
@@ -40,20 +43,30 @@ const routeNameMap = {
   "Trousers": "Quần Âu",
   "Shorts": "Quần short",
   "Product Details": "Chi tiết sản phẩm",
-  "Of Customer": "Tài khoản của tôi"
+  "Of Customer": "Tài khoản của tôi",
+  "By Category": "Sản phẩm",
+  "Shirt Pants": "Sản phẩm"
 };
 
 const breadcrumbs = computed(() => {
   if (route.name === "Home") return [];
 
-  if (route.name === "Product Details") {
-    return [
+  const breadcrumbMap = {
+    "Shirt Pants": (route) => [
       ...route.matched.map((matchRoute) => routeNameMap[matchRoute.name] || routeNameMap["Home"]),
-      (route.params.productName || "").replace(/-/g, " - ")
-    ];
-  }
+      (route.params.apparelType === "1" ? "Áo" : "Quần"),
+    ],
+    "By Category": (route) => [
+      ...route.matched.map((matchRoute) => routeNameMap[matchRoute.name] || routeNameMap["Home"]),
+      categoryStore.getCategoryBySlug(route.params.categorySlug || ""),
+    ],
+    "Product Details": (route) => [
+      ...route.matched.map((matchRoute) => routeNameMap[matchRoute.name] || routeNameMap["Home"]),
+      (route.params.productName || "").replace(/-/g, " - "),
+    ],
+  };
 
-  return route.matched.map((matchRoute) => {
+  return breadcrumbMap[route.name] ? breadcrumbMap[route.name](route) : route.matched.map((matchRoute) => {
     return matchRoute.name ? routeNameMap[matchRoute.name] : routeNameMap["Home"];
   });
 });

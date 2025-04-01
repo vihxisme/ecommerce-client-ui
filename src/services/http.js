@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const publicEndpoints = [
-  "/public-api-1",
-  "/public-api-2",
+  "/v1/products/only-discount",
+  "/v1/products/info/all",
   "/another-public-endpoint",
 ];
 

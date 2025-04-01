@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { createPinia } from "pinia";
 import App from "./App.vue";
 
 // Vue Router
@@ -14,7 +15,6 @@ import * as directives from 'vuetify/directives';
 
 // font-awesome
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
 
 // Material Design Icons (MDI)
 import "@mdi/font/css/materialdesignicons.css";
@@ -58,7 +58,8 @@ const app = createApp(App);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 
-app.use(router); // Đăng ký Vue Router
 app.use(vuetify); // Đăng ký Vuetify
+app.use(createPinia()); // Đăng ký Pinia
+app.use(router); // Đăng ký Vue Router
 
 app.mount("#app"); // Mount ứng dụng vào phần tử #app
