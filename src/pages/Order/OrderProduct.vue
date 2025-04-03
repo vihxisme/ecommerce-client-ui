@@ -16,21 +16,33 @@
             <v-card-title>
               <h3 class="text-left font-semibold my-2 capitalize">Danh sách sản phẩm</h3>
             </v-card-title>
-            <v-list-item v-for="(item, index) in cartItems" :key="index" class="border rounded-lg mb-2">
+            <v-list-item v-for="item in cartItems" :key="item.id" class="border rounded-lg mb-2">
               <v-card-text class="p-0 m-0">
                 <div class="flex justify-between gap-4">
                   <div style="flex: 10%" class="flex justify-between items-center">
-                    <v-img :src="item.image" :width="70" class="h-full"></v-img>
+                    <v-img :src="getCloudinaryUrl(item.imageUrl)" :lazy-src="image_error" aspect-ratio="1" :width="70"
+                      class="h-full" gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)">
+                      <template v-slot:placeholder>
+                        <v-row class="fill-height" align="center" justify="center">
+                          <v-progress-circular indeterminate color="warning"></v-progress-circular>
+                        </v-row>
+                      </template>
+                    </v-img>
                   </div>
                   <div style="flex: 90%" class="text-left p-2">
-                    <h4 class="text-sm">{{ capitalizeWord(item.name) }} - {{ item.code.toUpperCase()
+                    <h4 class="text-sm">{{ capitalizeWord(item.name) }} - {{ item.productCode
                     }}</h4>
-                    <span class="text-xxs font-semibold text-gray-500">{{ item.color }}</span>
-                    <span class="text-xxs font-semibold text-gray-500 mx-2">|</span>
-                    <span class="text-xxs font-semibold text-gray-500">{{ item.size }}</span>
-                    <div class="my-2 mr-0 ml-auto flex justify-between cs:sm-block">
+                    <div>
+                      <span class="text-xxs font-semibold text-gray-500">{{ item.colorName }}</span>
+                      <span class="text-xxs font-semibold text-gray-500 mx-2">|</span>
+                      <span class="text-xxs font-semibold text-gray-500">{{ item.sizeName }}</span>
+                    </div>
+                    <div>
+                      <span class="text-xxs font-semibold text-gray-500">×{{ item.quantity }}</span>
+                    </div>
+                    <div class="flex justify-between cs:sm-block">
                       <div class="text-sm">
-                        <span class="text-red-600 font-bold mr-2">{{ formatPrice(item.price) }}₫</span>
+                        <span class="text-red-600 font-bold gap-8">{{ formatPrice(item.finalPrice) }}₫</span>
                         <span v-if="item.price" class="text-gray-400 ml-2 line-through">
                           {{ formatPrice(item.price) }}₫
                         </span>
@@ -154,25 +166,27 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, computed } from 'vue';
+import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
-
-import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
+import { useCartStore } from '@/stores/useCartStore';
+import { useCartSelectionStore } from '@/stores/useCartSelectionStore';
+import { getCloudinaryUrl } from '@/utils/cloudinary';
+import image_error from '@/assets/images/e-commerce/404/image_error.png';
 
 const { xsAndDown, smAndUp } = useDisplay();
+const cartStore = useCartStore();
+const cartSelectionStore = useCartSelectionStore();
+const cartSelectedKey = ref([]);
+const cartItems = ref([]);
 
-const cartItems = ref([
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  }
-]);
+onMounted(() => {
+  cartSelectedKey.value = cartSelectionStore.getSelectedKeys;
+  cartItems.value = cartSelectedKey.value
+    .map(key => cartStore.getCartItemByKey(key))
+    .filter(item => item !== null);
+
+  console.log("Checkout: ", cartItems.value);
+})
 
 const selectedPaymentMethod = ref('cod');
 const paymentMethod = ref([
@@ -190,7 +204,7 @@ const paymentMethod = ref([
 
 const totalPrice = computed(() => {
   return cartItems.value
-    .reduce((total, item) => total + item.price * item.quantity, 0);
+    .reduce((total, item) => total + item.finalPrice * item.quantity, 0);
 });
 
 // Định dạng giá
