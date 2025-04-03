@@ -78,7 +78,7 @@ const showFilter = ref(false);
 
 const prodByCategory = ref([]);
 const pageNumber = ref(1);
-const pageSize = ref(5);
+const pageSize = ref(16);
 const totalPages = ref();
 const totalElements = ref();
 const loading = ref(false);
@@ -102,7 +102,7 @@ const fetchProdByCategory = async () => {
     console.log(res.data);
 
   } catch (error) {
-    console.error("Lỗi:", error);
+    console.error("ByCategory: API_ERROR:", error);
   } finally {
     loading.value = false;
   }

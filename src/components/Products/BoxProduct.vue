@@ -1,6 +1,7 @@
 <template>
   <v-card class="relative flex flex-col w-full h-full bg-white rounded-lg shadow-md overflow-hidden">
-    <ModalProduct :dialog="showModal" :product="product" @update:dialog="showModal = $event"></ModalProduct>
+    <ModalProduct :dialog="showModal" :product-id="product.id" @update:dialog="showModal = $event">
+    </ModalProduct>
     <!-- Hình ảnh sản phẩm -->
     <div class="relative w-full h-7/10">
       <!-- Nhãn giảm giá -->
@@ -16,7 +17,7 @@
         <div
           class="w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5 cursor-pointer"
           @click="handleToRouteDetails">
-          <v-img :src="imageUrl" :lazy-src="image_error" gradient="to top, rgba(0,0,0,0.3), rgba(0,0,0,0)"
+          <v-img :src="imageUrl" :lazy-src="image_error" gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)"
             alt="Hình ảnh mô tả sản phẩm" cover>
             <template v-slot:placeholder>
               <v-row class="fill-height" align="center" justify="center">
@@ -116,6 +117,11 @@ const props = defineProps({
 const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.productCode}`);
 
 const showModal = ref(false);
+const productId = ref(null);
+const handleClickModal = () => {
+  productId.value = props.product.id;
+  showModal.value = true;
+}
 
 // Biến hover độc lập cho từng nút
 const isHoveredQuickView = ref(false);
@@ -137,6 +143,7 @@ const handleMouseLeave = (event) => {
 const imageUrl = computed(() => getCloudinaryUrl(props.product.productImageUrl));
 
 const handleToRouteDetails = () => {
+  localStorage.setItem("product_detail", props.product.id);
   router.push(`/products/details/${props.product.name}-${props.product.productCode}`);
 }
 </script>

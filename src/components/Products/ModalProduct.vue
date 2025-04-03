@@ -11,15 +11,22 @@
 
       <!-- Nội dung modal -->
       <v-row class="w-full p-4 m-0 mt-16 flex justify-center">
-        <v-col cols="12" md="6" class="w-full p-4 mp:v-col">
+        <v-col cols="12" md="5" class="w-full p-4 mp:v-col">
           <!-- Hình ảnh sản phẩm -->
           <div class="relative group">
             <swiper @swiper="setMainSwiper" :modules="[Navigation, Thumbs]" :navigation="{
               nextEl: '.custom-next-img',
               prevEl: '.custom-prev-img',
-            }" class="main-image-swiper" @slideChange="selectedImage = product.images[$event.realIndex]">
-              <swiper-slide v-for="(image, index) in product.images" :key="index">
-                <v-img :src="image" aspect-ratio="1" class="rounded-lg" />
+            }" class="main-image-swiper" @slideChange="selectedImage = productImages[$event.realIndex].id">
+              <swiper-slide v-for="item in productImages" :key="item.id">
+                <v-img :src="getCloudinaryUrl(item.imageUrl)" aspect-ratio="1" class="rounded-lg"
+                  :lazy-src="image_error" gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)">
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate color="warning"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
               </swiper-slide>
             </swiper>
             <!-- Custom Navigation Buttons -->
@@ -43,14 +50,21 @@
               }" :navigation="{
                 nextEl: '.custom-next-slide',
                 prevEl: '.custom-prev-slide',
-              }" watch-slides-progress class="thumbnail-swiper">
-              <swiper-slide v-for="(image, index) in product.images" :key="index">
-                <v-img :src="image" width="60" height="80"
-                  class="cursor-pointer border-2 border-gray-300 rounded-md hover:border-orange-500"
-                  :class="{ 'border-orange-500': selectedImage === image }" @click="
-                    selectedImage = image;
-                  goToSlide(index);
-                  " />
+              }" watch-slides-progress class="thumbnail-swiper img-list:swiper">
+              <swiper-slide v-for="item in productImages" :key="item.id">
+                <v-img :src="getCloudinaryUrl(item.imageUrl)" width="60" height="80" :lazy-src="image_error"
+                  gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)"
+                  class="cursor-pointer border-2 border-gray-300 rounded-md hover:border-orange-500 img:v-img__placeholder"
+                  :class="{ 'border-orange-500': selectedImage === item.id }" @click="
+                    setSelectedImage(item.id);
+                  goToSlide(item.id);
+                  ">
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate color="warning"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
               </swiper-slide>
             </swiper>
             <!-- Custom Navigation Buttons -->
@@ -65,16 +79,16 @@
           </div>
         </v-col>
 
-        <v-col cols="12" md="6" class="w-full px-4 py-2 mp:v-col">
+        <v-col cols="12" md="7" class="w-full px-4 py-2 mp:v-col">
           <!-- Thông tin sản phẩm -->
           <v-card-text class="mp:v-card-text">
             <h3 class="text-xl font-semibold">{{ product.name }}</h3>
-            <p class="text-gray-500 py-2">Mã sản phẩm: <strong>{{ product.code }}</strong></p>
+            <p class="text-gray-500 py-2">Mã sản phẩm: <strong>{{ product.productCode }}</strong></p>
 
             <div class="py-2">
-              <span>Tình trạng: Còn hàng</span>
+              <span>Tình trạng: {{ product.status === 'ACTIVE' ? "Còn hàng" : "Hết hàng" }}</span>
               <span class="mx-4 text-gray-100 opacity-50">|</span>
-              <span>Thương hiệu: DIDOT</span>
+              <span>Thương hiệu: {{ product.brand }}</span>
             </div>
 
             <div class="bg-gray-100 py-2">
@@ -84,8 +98,8 @@
                 <span v-if="product.price" class="text-gray-400 text-lg line-through">
                   {{ formatPrice(product.price) }}₫
                 </span>
-                <span v-if="product.discount" class="bg-red-500 text-white px-2 py-1 text-xs rounded">
-                  -{{ product.discount }}%
+                <span v-if="product.discountPercentage" class="bg-red-500 text-white px-2 py-1 text-xs rounded">
+                  -{{ product.discountPercentage }}%
                 </span>
               </div>
             </div>
@@ -95,10 +109,11 @@
           <v-card-text class="mp:v-card-text">
             <h4 class="text-sm font-semibold">Màu sắc:</h4>
             <div class="text-xxs">
-              <v-btn v-for="(color, index) in product.colors" :key="index" @click="selectedColor = color"
+              <v-btn v-for="color in variantColors" :key="color.colorId" @click="handleClickColor(color.colorId);"
                 class="border border-gray-300 rounded-md px-1 py-1 shadow-none mx-1/5 my-1/5"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat size="small">
-                <span class="capitalize font-normal">{{ color }}</span>
+                :class="{ 'border-blueGray-100 bg-red-500 text-white': selectedColor === color.colorId }" flat
+                size="small">
+                <span class="capitalize font-normal">{{ color.colorName }}</span>
               </v-btn>
             </div>
           </v-card-text>
@@ -107,32 +122,32 @@
           <v-card-text class="mp:v-card-text">
             <h4 class="text-sm font-semibold">Kích thước:</h4>
             <div class="text-xss">
-              <v-btn v-for="(size, index) in product.sizes" :key="index" @click="selectedSize = size.name"
+              <v-btn v-for="size in variantSizes" :key="size.sizeId" @click="handleClickSize(size.sizeId)"
                 class="border border-gray-300 rounded-md mx-1/5 my-1/5 shadow-none"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedSize === size.name }"
-                :disabled="!size.available" flat size="small">
-                <span class="capitalize font-normal">{{ size.name }}</span>
+                :class="{ 'border-blueGray-100 bg-red-500 text-white': selectedSize === size.sizeId }" flat
+                :disabled="!sizeFromColor.includes(size.sizeId)" size="small">
+                <span class="capitalize font-normal">{{ size.sizeName }}</span>
               </v-btn>
             </div>
           </v-card-text>
 
           <!-- Số lượng -->
           <v-card-text class="flex items-center mp:v-card-text">
-            <h4 class="text-sm font-semibold">Số lượng:</h4>
-            <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="2rem" height="2rem"
-              @click="decreaseQuantity">
+            <h4 class="text-sm font-semibold py-2">Số lượng:</h4>
+            <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="1.5rem" height="1.5rem"
+              :disabled="!selectedColor || !selectedSize" @click="decreaseQuantity">
               <v-icon>mdi-minus</v-icon>
             </v-btn>
             <span class="text-lg mx-2">{{ quantity }}</span>
-            <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-plus" min-width="2rem" height="2rem"
-              @click="increaseQuantity">
+            <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-plus" min-width="1.5rem" height="1.5rem"
+              :disabled="!selectedColor || !selectedSize" @click="increaseQuantity">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-card-text>
 
           <!-- Nút Thêm vào giỏ -->
-          <div class="px-4">
-            <v-btn class="bg-red-500 w-full text-white font-bold rounded-md">
+          <div class="px-4 my-2">
+            <v-btn class="bg-red-500 w-full text-white font-bold rounded-md" @click="handleClickAddCart">
               Thêm vào giỏ hàng
             </v-btn>
             <router-link :to="prodDetailsRoute" class="mt-2 block underline hover:text-red-500">
@@ -147,12 +162,15 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, onMounted, computed } from "vue";
+import { ref, watch, defineProps, defineEmits, onMounted, computed, watchEffect } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Thumbs } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import { processProductImages, extractVariantData, extractVariantToSizes, extractVariantToColors, getSizeIdsByColorId } from "@/utils/productUtil";
+import { getCloudinaryUrl } from "@/utils/cloudinary";
+import { getProductDetails } from "@/services/apis/productService";
 
 // Nhận dữ liệu sản phẩm từ props
 const props = defineProps({
@@ -160,40 +178,81 @@ const props = defineProps({
     type: Boolean,
     required: true
   },
-  product: {
-    type: Object,
+  productId: {
+    type: String,
     required: true
   }
 });
 
-import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
-import insta2 from "@/assets/images/e-commerce/home/insta2.jpg";
-import insta3 from "@/assets/images/e-commerce/home/insta3.jpg";
-import insta4 from "@/assets/images/e-commerce/home/insta4.jpg";
-import insta5 from "@/assets/images/e-commerce/home/insta5.jpg";
-import insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
-
 // Tạo đường dẫn động đến trang chi tiết sản phẩm
-const prodDetailsRoute = computed(() => `/products/details/${props.product.name}-${props.product.code}`);
+const prodDetailsRoute = computed(() => `/products/details/${product.name}-${product.productCode}`);
 
-const product = {
-  name: "Áo khoác da lộn basic cổ cao siêu xấu siêu không hợp siêu vỡ form siêu nát",
-  code: "FWCL002",
-  price: 850000,
-  finalPrice: 649000,
-  discount: 24,
-  quantity: 19,
-  images: [
-    insta1, insta2, insta3, insta4, insta5, insta6, insta1, insta2, insta3, insta4, insta5, insta6,
-  ],
-  colors: ["Xanh rêu đậm", "Trắng kem đậm", "Be nhạt", "Dark Navy", "Nâu", "Đen"],
-  sizes: [
-    { name: "S", available: true },
-    { name: "M", available: true },
-    { name: "L", available: false },
-    { name: "XL", available: false }
-  ]
+const loading = ref(false);
+const product = ref();
+const productDetails = ref([]);
+const productVariants = ref([]);
+const variantColors = ref([]);
+const variantSizes = ref([]);
+const productImages = ref([]);
+
+const fetchProduct = async () => {
+  loading.value = true;
+  try {
+    const id = props.productId;
+    console.log("productId: ", id);
+
+    if (!id) {
+      loading.value = false;
+      throw new Error("Product not found");
+    }
+
+    const res = await getProductDetails(id);
+    product.value = res.data.data;
+    productDetails.value = res.data.data.productDetailsDTO;
+    productVariants.value = extractVariantData(res.data.data.productVariantsDTO);
+    variantColors.value = extractVariantToColors(productVariants.value);
+    variantSizes.value = extractVariantToSizes(productVariants.value);
+    productImages.value = processProductImages(res.data.data);
+    console.log(res.data);
+    console.log("color: ", variantColors.value);
+    console.log("size: ", variantSizes.value);
+    console.log("images: ", productImages.value);
+    console.log("variant: ", productVariants.value);
+  } catch (error) {
+    console.error("Modal Product: API_Error: ", error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchProduct();
+})
+
+const resetProductData = () => {
+  product.value = null;
+  productDetails.value = [];
+  productVariants.value = [];
+  variantColors.value = [];
+  variantSizes.value = [];
+  productImages.value = [];
+  selectedImage.value = null;
+  selectedColor.value = null;
+  selectedSize.value = null;
+  quantity.value = 1;
 };
+
+// Watch modal state
+watch(() => props.dialog, (newVal) => {
+  if (newVal)
+    fetchProduct();
+
+  // setTimeout(() => {
+  //   resetProductData();
+  // }, 1000);
+});
+
+
 
 // Định nghĩa emit để có thể gửi sự kiện lên component cha
 const emit = defineEmits(["update:dialog"]);
@@ -220,17 +279,57 @@ const closeModal = () => {
   emit("update:dialog", false)
 };
 
+// Biến đo số lượng
+const quantity = ref(1);
+// Biến theo dõi variant theo sự thay đổi của selectedColor và selectedSize
+const variant = computed(() => {
+  return productVariants.value.find(item =>
+    item.colorId === selectedColor.value && item.sizeId === selectedSize.value
+  ) || null;
+})
 // Hàm tăng/giảm số lượng
-const increaseQuantity = () => { if (quantity.value < product.quantity) quantity.value++; }
+const increaseQuantity = () => {
+  if (variant.value != null && quantity.value < variant.value.stock)
+    quantity.value++;
+}
 const decreaseQuantity = () => {
-  if (quantity.value > 1) quantity.value--;
+  if (variant.value != null && quantity.value > 1) quantity.value--;
 };
 
-// Biến trạng thái
-const selectedImage = ref(product.images?.[0] || "");
+
+// Biến trạng thái, giá trị mặc định ảnh được hiển thị
+const selectedImage = ref();
+
+const setSelectedImage = (index) => {
+  selectedImage.value = index;
+}
+
+watchEffect(() => {
+  const defaultImage = productImages.value.find(item => item.keyImg === "default");
+  selectedImage.value = defaultImage ? defaultImage.id : productImages[0]?.id || "";
+});
+
+// biến trạng thái theo dõi color
 const selectedColor = ref(null);
+const handleClickColor = (colorId) => {
+  selectedColor.value = colorId;
+  selectedSize.value = null;
+  quantity.value = 1;
+
+  if (selectedColor.value != null) {
+    sizeFromColor.value = getSizeIdsByColorId(productVariants.value, selectedColor.value);
+  }
+}
+
+// biến trạng thái theo dõi size
 const selectedSize = ref(null);
-const quantity = ref(1);
+//biến trạng thái theo dõi size theo color
+const sizeFromColor = ref([]);
+const handleClickSize = (sizeId) => {
+  if (selectedColor.value != null) {
+    selectedSize.value = sizeId;
+  }
+}
 
 const mainSwiperRef = ref(null);
 const thumbSwiperRef = ref(null);
@@ -247,8 +346,10 @@ const setThumbSwiper = (swiper) => {
   thumbSwiper.value = swiper;
 };
 
-const goToSlide = (index) => {
-  if (mainSwiper.value) {
+const goToSlide = (id) => {
+  const index = productImages.value.findIndex(item => item.id === id);
+
+  if (index !== -1 && mainSwiper.value) {
     mainSwiper.value.slideTo(index);
   }
 };
@@ -260,6 +361,32 @@ onMounted(() => {
   }
 });
 
+const isAddCart = ref(false);
+const handleClickAddCart = () => {
+  const productCart = {};
+  if (selectedColor.value === variant.value.colorId && selectedSize.value === variant.value.sizeId) {
+    productCart = {
+      id: productInfo.value.id,
+      productCode: productInfo.value.productCode,
+      name: productInfo.value.name,
+      imageUrl: productInfo.value.productImageUrl,
+      price: productInfo.value.price,
+      finalPrice: productInfo.value.finalPrice,
+      variantId: variant.value.id,
+      colorId: variant.value.colorId,
+      colorName: variant.value.colorName,
+      sizeId: variant.value.sizeId,
+      sizeName: variant.value.sizeName,
+      stock: variant.value.stock,
+      quantity: quantity.value
+    };
+
+    cartStore.addToCart(productCart.value);
+    isAddCart.value = true;
+  } else {
+    isAddCart.value = false;
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -361,6 +488,21 @@ onMounted(() => {
   @media (max-width: 968px) {
     padding-left: 0;
     padding-right: 0;
+  }
+}
+
+.img-list\:swiper {
+  ::v-deep(.swiper-wrapper) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.img\:v-img__placeholder {
+  ::v-deep(.v-img__placeholder) {
+    display: flex;
+    align-items: center;
   }
 }
 </style>

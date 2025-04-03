@@ -1,6 +1,9 @@
 <template>
-  <div class="w-full mt-26 rps-mb:mt-16">
+  <div v-if="productInfo" class="w-full mt-26 rps-mb:mt-16">
     <Breadcrumb />
+    <v-snackbar v-model="isAddCart" :timeout="5000" location="top right" :color="isContentCart ? 'success' : 'error'">
+      {{ isContentCart ? "Sản phẩm đã được thêm vào giỏ hàng!" : "Thêm sản phẩm thất bại!" }}
+    </v-snackbar>
 
     <v-container class="p-0" :class="{ 'v-container--fluid': xsAndDown, 'v-container': smAndUp }">
       <v-row class="w-full py-4 m-0 flex justify-center">
@@ -10,9 +13,16 @@
             <swiper @swiper="setMainSwiper" :modules="[Navigation, Thumbs]" :navigation="{
               nextEl: '.custom-next-img',
               prevEl: '.custom-prev-img',
-            }" class="main-image-swiper" @slideChange="selectedImage = product.images[$event.realIndex]">
-              <swiper-slide v-for="(image, index) in product.images" :key="index">
-                <v-img :src="image" aspect-ratio="16/9" class="rounded-lg" />
+            }" class="main-image-swiper" @slideChange="selectedImage = productImages[$event.realIndex].id">
+              <swiper-slide v-for="item in productImages" :key="item.id">
+                <v-img :src="getCloudinaryUrl(item.imageUrl)" height="500px" class="rounded-lg" :lazy-src="image_error"
+                  gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)" contain>
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate color="warning"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
               </swiper-slide>
             </swiper>
             <!-- Custom Navigation Buttons -->
@@ -36,14 +46,19 @@
               }" :navigation="{
                 nextEl: '.custom-next-slide',
                 prevEl: '.custom-prev-slide',
-              }" watch-slides-progress class="thumbnail-swiper">
-              <swiper-slide v-for="(image, index) in product.images" :key="index">
-                <v-img :src="image" width="60" height="80"
-                  class="cursor-pointer border-2 border-gray-300 rounded-md hover:border-orange-500"
-                  :class="{ 'border-orange-500': selectedImage === image }" @click="
-                    selectedImage = image;
-                  goToSlide(index);
-                  " />
+              }" watch-slides-progress class="thumbnail-swiper img-list:swiper">
+              <swiper-slide v-for="item in productImages" :key="item.id">
+                <v-img :src="getCloudinaryUrl(item.imageUrl)" width="60" height="80" :lazy-src="image_error"
+                  gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)"
+                  class="cursor-pointer border-2 border-gray-300 rounded-md hover:border-orange-500 img:v-img__placeholder"
+                  :class="{ 'border-orange-500': selectedImage === item.id }"
+                  @click="selectedImage = setSelectedImage(item.id); goToSlide(item.id);" contain>
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height" align="center" justify="center">
+                      <v-progress-circular indeterminate color="warning"></v-progress-circular>
+                    </v-row>
+                  </template>
+                </v-img>
               </swiper-slide>
             </swiper>
             <!-- Custom Navigation Buttons -->
@@ -61,13 +76,13 @@
         <v-col cols="12" md="7" xl="5" class="w-full py-2 mp:v-col">
           <!-- Thông tin sản phẩm -->
           <v-card-text class="mp:v-card-text text-left">
-            <h3 class="text-xl font-semibold">{{ product.name }}</h3>
-            <p class="text-gray-500 py-2">Mã sản phẩm: <strong>{{ product.code }}</strong></p>
+            <h3 class="text-xl font-semibold">{{ productInfo.name }}</h3>
+            <p class="text-gray-500 py-2">Mã sản phẩm: <strong>{{ productInfo.productCode }}</strong></p>
 
             <div class="my-2">
-              <span>Tình trạng: Còn hàng</span>
+              <span>Tình trạng: {{ productInfo?.status === 'ACTIVE' ? "Còn hàng" : "Hết hàng" }}</span>
               <span class="mx-4 text-gray-100 opacity-50">|</span>
-              <span>Thương hiệu: DIDOT</span>
+              <span>Thương hiệu: {{ productInfo.brand }}</span>
             </div>
 
             <!-- votes -->
@@ -78,12 +93,12 @@
             <div class="bg-gray-100 py-2">
               <div class="flex justify-between items-center mx-2 my-auto">
                 <span class="text-xl font-semibold"> Giá: </span>
-                <span class="ext-red-600 font-bold text-lg">{{ formatPrice(product.finalPrice) }}₫</span>
-                <span v-if="product.price" class="text-gray-400 text-lg line-through">
-                  {{ formatPrice(product.price) }}₫
+                <span class="ext-red-600 font-bold text-lg">{{ formatPrice(productInfo.finalPrice) }}₫</span>
+                <span v-if="productInfo.price" class="text-gray-400 text-lg line-through">
+                  {{ formatPrice(productInfo.price) }}₫
                 </span>
-                <span v-if="product.discount" class="bg-red-500 text-white px-2 py-1 text-xs rounded">
-                  -{{ product.discount }}%
+                <span v-if="productInfo.discountPercentage" class="bg-red-500 text-white px-2 py-1 text-xs rounded">
+                  -{{ productInfo.discountPercentage }}%
                 </span>
               </div>
             </div>
@@ -93,10 +108,11 @@
           <v-card-text class="mp:v-card-text text-left">
             <h4 class="text-sm font-semibold py-4">Màu sắc:</h4>
             <div class="text-xxs">
-              <v-btn v-for="(color, index) in product.colors" :key="index" @click="selectedColor = color"
+              <v-btn v-for="color in variantColors" :key="color.colorId" @click="handleClickColor(color.colorId)"
                 class="border border-gray-300 rounded-md px-1 py-1 shadow-none mx-1/5 my-1/5"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedColor === color }" flat size="small">
-                <span class="capitalize font-normal">{{ color }}</span>
+                :class="{ 'border-blueGray-100 bg-red-500 text-white': selectedColor === color.colorId }" flat
+                size="small">
+                <span class="capitalize font-normal">{{ color.colorName }}</span>
               </v-btn>
             </div>
           </v-card-text>
@@ -105,11 +121,11 @@
           <v-card-text class="mp:v-card-text text-left">
             <h4 class="text-sm font-semibold py-4">Kích thước:</h4>
             <div class="text-xss">
-              <v-btn v-for="(size, index) in product.sizes" :key="index" @click="selectedSize = size.name"
+              <v-btn v-for="size in variantSizes" :key="size.sizeId" @click="handleClickSize(size.sizeId)"
                 class="border border-gray-300 rounded-md mx-1/5 my-1/5 px-1 py-1 shadow-none"
-                :class="{ 'border-blueGray-100 bg-blueGray-100': selectedSize === size.name }"
-                :disabled="!size.available" flat size="small">
-                <span class="capitalize font-normal">{{ size.name }}</span>
+                :class="{ 'border-blueGray-100 bg-red-500 text-white': selectedSize === size.sizeId }" flat
+                :disabled="!sizeFromColor.includes(size.sizeId)" size="small">
+                <span class="capitalize font-normal">{{ size.sizeName }}</span>
               </v-btn>
             </div>
           </v-card-text>
@@ -118,22 +134,23 @@
           <v-card-text class="flex items-center gap-2 p-0 text-left">
             <h4 class="text-sm font-semibold ml-4 mr-8 my-4">Số lượng:</h4>
             <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-minus" min-width="1.5rem" height="1.5rem"
-              @click="decreaseQuantity" flat>
+              :disabled="!selectedColor || !selectedSize" @click="decreaseQuantity" flat>
               <v-icon>mdi-minus</v-icon>
             </v-btn>
             <span class="text-lg mx-2">{{ quantity }}</span>
             <v-btn class="mx-2 p-0 border border-gray-300 shadow-none mp:btn-plus" min-width="1.5rem" height="1.5rem"
-              @click="increaseQuantity" flat>
+              :disabled="!selectedColor || !selectedSize" @click="increaseQuantity" flat>
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </v-card-text>
 
           <!-- Nút Thêm vào giỏ -->
           <div class="px-4 py-8 flex justify-between items-center">
-            <v-btn class="flex-1 flex-grow bg-red-500 text-white font-bold mx-2 rounded-md pd:v-btn">
+            <v-btn class="flex-1 flex-grow bg-red-500 text-white font-bold mx-2 rounded-md pd:v-btn"
+              @click="handleClickAddCart">
               Thêm vào giỏ hàng
             </v-btn>
-            <v-btn class="flex-1 flex-grow bg-red-500 text-white font-bold mx-2 rounded-md">
+            <v-btn class="flex-1 flex-grow bg-red-500 text-white font-bold mx-2 rounded-md" @click="handleClickNewBuy">
               Mua ngay
             </v-btn>
           </div>
@@ -150,7 +167,7 @@
 
       <!-- Tab Header -->
       <div class="my-8">
-        <v-tabs v-model="activeTab" class="mb-4 flex border-b">
+        <v-tabs v-model="activeTab" class="mb-4 flex border-b" color="success">
           <v-tab v-for="(tab, index) in tabs" :key="index" class="flex-1 text-center">
             {{ tab.label }}
           </v-tab>
@@ -173,11 +190,16 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from "vue";
+import { ref, watch, nextTick, onMounted, watchEffect, computed } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import { useRoute } from "vue-router";
 import Breadcrumb from "@/components/Navigation/Breadcrumb.vue";
 
 import { faShippingFast, faShield, faPhoneVolume, faSyncAlt, faCheckCircle, faHeadset } from "@fortawesome/free-solid-svg-icons";
+import { getCloudinaryUrl } from "@/utils/cloudinary";
+import { getProductDetails } from "@/services/apis/productService";
+import { processProductImages, extractVariantData, extractVariantToSizes, extractVariantToColors, getSizeIdsByColorId } from "@/utils/productUtil";
+import { useCartStateStore } from "@/stores/useCartStateStore";
 
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Thumbs } from "swiper/modules";
@@ -185,14 +207,14 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 
-const { xsAndDown, smAndUp } = useDisplay();
+import image_error from '@/assets/images/e-commerce/404/image_error.png';
+import { useCartStore } from "@/stores/useCartStore";
 
-import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
-import insta2 from "@/assets/images/e-commerce/home/insta2.jpg";
-import insta3 from "@/assets/images/e-commerce/home/insta3.jpg";
-import insta4 from "@/assets/images/e-commerce/home/insta4.jpg";
-import insta5 from "@/assets/images/e-commerce/home/insta5.jpg";
-import insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
+const { xsAndDown, smAndUp, lgAndUp } = useDisplay();
+const cartStore = useCartStore();
+const cartStateStore = useCartStateStore();
+
+const route = useRoute();
 
 const policies = ref([
   { text: "Miễn phí giao hàng cho đơn hàng từ 500K", icon: faShippingFast },
@@ -203,41 +225,107 @@ const policies = ref([
   { text: "Hỗ trợ bảo hành, đổi sản phẩm tại tất cả store", icon: faHeadset },
 ]);
 
-const product = {
-  name: "Áo khoác da lộn basic cổ cao siêu xấu siêu không hợp siêu vỡ form siêu nát",
-  code: "FWCL002",
-  price: 850000,
-  finalPrice: 649000,
-  discount: 24,
-  quantity: 19,
-  images: [
-    insta1, insta2, insta3, insta4, insta5, insta6, insta1, insta2, insta3, insta4, insta5, insta6,
-  ],
-  colors: ["Xanh rêu đậm", "Trắng kem đậm", "Be nhạt", "Dark Navy", "Nâu", "Đen"],
-  sizes: [
-    { name: "S", available: true },
-    { name: "M", available: true },
-    { name: "L", available: false },
-    { name: "XL", available: false }
-  ]
-};
+const loading = ref(false);
+const productInfo = ref();
+const productDetails = ref([]);
+const productVariants = ref([]);
+const variantColors = ref([]);
+const variantSizes = ref([]);
+const productImages = ref([]);
 
+const fetchProductDetails = async () => {
+  loading.value = true;
+  try {
+    const id = localStorage.getItem("product_detail");
+
+    const res = await getProductDetails(id);
+    productInfo.value = res.data.data;
+    productDetails.value = res.data.data.productDetailsDTO;
+    productVariants.value = extractVariantData(res.data.data.productVariantsDTO);
+    variantColors.value = extractVariantToColors(productVariants.value);
+    variantSizes.value = extractVariantToSizes(productVariants.value);
+    productImages.value = processProductImages(res.data.data);
+    console.log(res.data);
+    console.log("color: ", variantColors.value);
+    console.log("size: ", variantSizes.value);
+    console.log("images: ", productImages.value);
+    console.log("variant: ", productVariants.value);
+  } catch (error) {
+    console.error("Product Details: API_Error: ", error);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  fetchProductDetails();
+  selectedColor.value = null;
+  selectedSize.value = null;
+});
+
+watch(() => {
+  fetchProductDetails();
+});
+
+watchEffect(() => {
+  fetchProductDetails();
+})
 
 // Định dạng giá
 const formatPrice = (price) => price.toLocaleString("vi-VN");
 
 
+// Biến đo số lượng
+const quantity = ref(1);
+// Biến theo dõi variant theo sự thay đổi của selectedColor và selectedSize
+const variant = computed(() => {
+  return productVariants.value.find(item =>
+    item.colorId === selectedColor.value && item.sizeId === selectedSize.value
+  ) || null;
+})
 // Hàm tăng/giảm số lượng
-const increaseQuantity = () => { if (quantity.value < product.quantity) quantity.value++; }
+const increaseQuantity = () => {
+  if (variant.value != null && quantity.value < variant.value.stock)
+    quantity.value++;
+}
 const decreaseQuantity = () => {
-  if (quantity.value > 1) quantity.value--;
+  if (variant.value != null && quantity.value > 1) quantity.value--;
 };
 
-// Biến trạng thái
-const selectedImage = ref(product.images?.[0] || "");
+
+// Biến trạng thái, giá trị mặc định ảnh được hiển thị
+const selectedImage = ref();
+
+const setSelectedImage = (index) => {
+  selectedImage.value = index;
+}
+
+watchEffect(() => {
+  const defaultImage = productImages.value.find(item => item.keyImg === "default");
+  selectedImage.value = defaultImage ? defaultImage.id : productImages[0]?.id || "";
+});
+
+// biến trạng thái theo dõi color
 const selectedColor = ref(null);
+const handleClickColor = (colorId) => {
+  selectedColor.value = colorId;
+  selectedSize.value = null;
+  quantity.value = 1;
+
+  if (selectedColor.value != null) {
+    sizeFromColor.value = getSizeIdsByColorId(productVariants.value, selectedColor.value);
+  }
+}
+
+// biến trạng thái theo dõi size
 const selectedSize = ref(null);
-const quantity = ref(1);
+//biến trạng thái theo dõi size theo color
+const sizeFromColor = ref([]);
+const handleClickSize = (sizeId) => {
+  if (selectedColor.value != null) {
+    selectedSize.value = sizeId;
+  }
+}
 
 const mainSwiperRef = ref(null);
 const thumbSwiperRef = ref(null);
@@ -254,8 +342,10 @@ const setThumbSwiper = (swiper) => {
   thumbSwiper.value = swiper;
 };
 
-const goToSlide = (index) => {
-  if (mainSwiper.value) {
+const goToSlide = (id) => {
+  const index = productImages.value.findIndex(item => item.id === id);
+
+  if (index !== -1 && mainSwiper.value) {
     mainSwiper.value.slideTo(index);
   }
 };
@@ -318,6 +408,41 @@ watch(activeTab, () => {
 });
 
 onMounted(checkOverflow);
+
+const isAddCart = ref(false);
+const isContentCart = ref(false);
+const productCart = ref();
+const handleClickAddCart = () => {
+  if (selectedColor.value === variant.value.colorId && selectedSize.value === variant.value.sizeId) {
+    productCart.value = {
+      id: productInfo.value.id,
+      productCode: productInfo.value.productCode,
+      name: productInfo.value.name,
+      imageUrl: productInfo.value.productImageUrl,
+      price: productInfo.value.price,
+      finalPrice: productInfo.value.finalPrice,
+      variantId: variant.value.id,
+      colorId: variant.value.colorId,
+      colorName: variant.value.colorName,
+      sizeId: variant.value.sizeId,
+      sizeName: variant.value.sizeName,
+      stock: variant.value.stock,
+      quantity: quantity.value
+    };
+
+    cartStore.addToCart(productCart.value);
+    isAddCart.value = true;
+    isContentCart.value = true;
+  } else {
+    isAddCart.value = false;
+    isContentCart.value = false;
+    console.log("isAddCart: ", isAddCart.value);
+  }
+}
+
+const handleClickNewBuy = () => {
+  cartStateStore.toggleCartState(!cartStateStore.cartState);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -359,5 +484,20 @@ onMounted(checkOverflow);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.img-list\:swiper {
+  ::v-deep(.swiper-wrapper) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.img\:v-img__placeholder {
+  ::v-deep(.v-img__placeholder) {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

@@ -97,7 +97,7 @@ const fetchProducts = async () => {
       }
     }, 1000);
   } catch (error) {
-    console.error("Lỗi khi lấy sản phẩm khuyến mãi:", error);
+    console.error("PromoProductList: API_Error:", error);
   } finally {
     loading.value = false;
   }

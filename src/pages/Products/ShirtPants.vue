@@ -101,7 +101,7 @@ const fetchProdByCateApparelType = async () => {
     console.log(res.data);
 
   } catch (error) {
-    console.error("Lỗi:", error);
+    console.error("Shirt-Pants: API_Error:", error);
   } finally {
     loading.value = false;
   }

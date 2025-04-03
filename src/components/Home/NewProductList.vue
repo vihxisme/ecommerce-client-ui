@@ -55,7 +55,7 @@ const fetchNewProducts = async () => {
     newProducts.value = res.data.data.content;
     console.log(res.data);
   } catch (error) {
-    console.error("Lỗi khi lấy sản phẩm mới:", error);
+    console.error("NewProductList: API_Error:", error);
   } finally {
     loading.value = false;
   }

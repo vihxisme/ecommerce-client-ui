@@ -92,7 +92,7 @@ const fetchpromoProducts = async () => {
     totalElements.value = res.data.data.totalElements;
     console.log(res.data);
   } catch (error) {
-    console.error("Lỗi khi lấy sản phẩm khuyến mãi:", error);
+    console.error("Promo Product: API_Error: ", error);
   } finally {
     loading.value = false;
   }
