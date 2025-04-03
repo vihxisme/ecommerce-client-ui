@@ -49,7 +49,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import Category from "@/components/Products/Category.vue";
-import { generateSlug } from "@/utils/slugify";
 import { useCategoryStore } from "@/stores/useCategory";
 
 const router = useRouter();
@@ -61,7 +60,7 @@ const categories = computed(() => categoryStore.categories);
 
 onMounted(async () => {
   await categoryStore.fetchCategories();
-  console.log("data: " + categories.value);
+  console.log("data: ", categories.value);
 })
 
 const handleCategoryClick = (id, name) => {

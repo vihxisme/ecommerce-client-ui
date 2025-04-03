@@ -72,8 +72,8 @@
               <div class="mx-2 cursor-pointer" icon aria-label="Search" @click="isSearch = true"><v-icon
                   class="mdi mdi-magnify icon-hover text-3xl font-bold"></v-icon></div>
               <div class="mx-2 cursor-pointer">
-                <v-badge color="red" content="0" offset-x="0" offset-y="0">
-                  <v-icon class="mdi mdi-cart-outline icon-hover text-3xl font-bold" @click="isCart = true"></v-icon>
+                <v-badge color="red" :content="totalItemCart" offset-x="0" offset-y="0">
+                  <v-icon class="mdi mdi-cart-outline icon-hover text-3xl font-bold" @click="toggleCart"></v-icon>
                 </v-badge>
               </div>
               <router-link class="mx-2 cursor-pointer" icon aria-label="Notification">
@@ -97,19 +97,33 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect, nextTick } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, watchEffect, nextTick, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { toggleScroll } from "@/utils/scrollUtil";
 
 import MenuSidebar from "@/components/Navigation/MenuSidebar.vue";
 import CartSidebar from "@/components/Cart/CartSidebar.vue";
 import SearchTopbar from "@/components/Search/SearchTopbar.vue";
 import { useCategoryStore } from "@/stores/useCategory";
+import { useCartStore } from "@/stores/useCartStore";
+import { useCartStateStore } from "@/stores/useCartStateStore";
 
 const router = useRouter();
+const route = useRoute();
+const cartStore = useCartStore();
+const totalItemCart = computed(() => cartStore.totalItems);
 
 const drawer = ref(false);
-const isCart = ref(false);
+const cartStateStore = useCartStateStore();
+const isCart = computed({
+  get: () => cartStateStore.cartState,
+  set: (value) => cartStateStore.toggleCartState(value),
+});
+// Kiểm tra trạng thái giỏ hàng
+const toggleCart = () => {
+  cartStateStore.toggleCartState(!cartStateStore.cartState);
+};
+
 const isSearch = ref(false);
 
 const categoryStore = useCategoryStore();
@@ -123,12 +137,12 @@ const menuItems = ref([
   { text: "Giảm giá", link: "/collections/onsale" },
   {
     text: "Áo",
-    link: `/collections/${"ao"}-${"1"}`,
+    link: `/collections/${"ao"}/${"1"}`,
     children: [],
   },
   {
     text: "Quần",
-    link: `/collections/${"quan"}-${"2"}`,
+    link: `/collections/${"quan"}/${"2"}`,
     children: [],
   },
   { text: "Hệ thống cửa hàng", link: "/system-store" },
@@ -152,10 +166,10 @@ watchEffect(() => {
   menuItems.value.find((item) => item.text === "Quần").children = categoryStore.pantsCategories;
 });
 
-const handleMenuItemCategoryClick = async (categoryId, route) => {
+const handleMenuItemCategoryClick = async (categoryId, path) => {
   categoryStore.setSelectedCategory(categoryId);
   await nextTick();
-  router.push(route);
+  router.push(path);
 }
 </script>
 

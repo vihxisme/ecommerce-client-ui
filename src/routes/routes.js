@@ -31,14 +31,9 @@ const routes = [
         component: PromoProduct
       },
       {
-        path: "collections/:name-:apparelType",
+        path: "collections/:name/:apparelType",
         name: "Shirt Pants",
         component: ShirtPants
-      },
-      {
-        path: "products/quan",
-        name: "Pants",
-        component: ByCategory
       },
       {
         path: "products/details/:productName",
@@ -58,8 +53,8 @@ const routes = [
     ],
   },
   {
-    path: "/order",
-    name: "OrderProduct",
+    path: "/checkout",
+    name: "CheckOut",
     component: OrderProduct
   },
   {

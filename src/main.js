@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPersistedState from "pinia-plugin-persistedstate";
 import App from "./App.vue";
 
 // Vue Router
@@ -53,13 +54,16 @@ const vuetify = createVuetify({
   },
 })
 
+const pinia = createPinia();
+pinia.use(piniaPersistedState);
+
 // Khởi tạo ứng dụng Vue
 const app = createApp(App);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.use(vuetify); // Đăng ký Vuetify
-app.use(createPinia()); // Đăng ký Pinia
+app.use(pinia); // Đăng ký Pinia
 app.use(router); // Đăng ký Vue Router
 
 app.mount("#app"); // Mount ứng dụng vào phần tử #app

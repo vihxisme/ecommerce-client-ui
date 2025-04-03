@@ -12,39 +12,46 @@
 
       <div v-if="cartItems.length !== 0" class="flex-1 w-full p-2 scroll-y">
         <v-list>
-          <v-list-item v-for="(item, index) in cartItems" :key="index" class="shadow-md border rounded-lg mb-2">
+          <v-list-item v-for="item in cartItems" :key="item.key" class="shadow-md border rounded-lg mb-2">
             <v-checkbox v-model="item.selected" :width="30" style="padding: 0; margin: 0; height: 40px;" color="success"
               class="absolute top--1/2r left-0 cs:v-checkbox" ripple>
             </v-checkbox>
 
-            <v-icon class="absolute cursor-pointer top-1/4r right-1/4r hover:text-red-500">mdi-delete-outline</v-icon>
+            <v-icon class="absolute cursor-pointer top-1/4r right-1/4r hover:text-red-500"
+              @click="removeItem(item.key)">mdi-delete-outline</v-icon>
 
             <v-card-text class="mt-8 p-0 m-0">
-              <div class="flex justify-between">
-                <div style="flex: 20%">
-                  <v-img :src="item.image" :width="80" height="100"></v-img>
+              <div class="flex mb-2 justify-between">
+                <div style="flex: 20%" class="flex justify-between items-center">
+                  <v-img :src="getCloudinaryUrl(item.imageUrl)" :width="80" height="100" :lazy-src="image_error"
+                    gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)">
+                    <template v-slot:placeholder>
+                      <v-row class="fill-height" align="center" justify="center">
+                        <v-progress-circular indeterminate color="error"></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
                 </div>
-                <div style="flex: 80%" class="text-left p-2">
-                  <h4 class="text-sm">{{ item.name }} - {{ item.code }}</h4>
-                  <span class="text-xxs font-semibold text-gray-500">{{ item.color }}</span>
+                <div style="flex: 80%" class="relative text-left p-2">
+                  <h4 class="text-sm">{{ item.name }} - {{ item.productCode }}</h4>
+                  <span class="text-xxs font-semibold text-gray-500">{{ item.colorName }}</span>
                   <span class="text-xxs font-semibold text-gray-500 mx-2">|</span>
-                  <span class="text-xxs font-semibold text-gray-500">{{ item.size }}</span>
-                </div>
-              </div>
-
-              <div class="w-8/10 my-2 px-2 mr-0 ml-auto flex justify-between cs:sm-block">
-                <div class="text-sm">
-                  <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
-                    @click="decreaseQuantity(index)">mdi-minus</v-icon>
-                  <span class="mx-2">{{ item.quantity }}</span>
-                  <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
-                    @click="increaseQuantity(index)">mdi-plus</v-icon>
-                </div>
-                <div class="text-sm">
-                  <span class="text-red-600 font-bold mr-2">{{ formatPrice(item.price) }}₫</span>
-                  <span v-if="item.price" class="text-gray-400 ml-2 line-through">
-                    {{ formatPrice(item.price) }}₫
-                  </span>
+                  <span class="text-xxs font-semibold text-gray-500">{{ item.sizeName }}</span>
+                  <div class="w-full mt-4 mb-0 flex justify-between">
+                    <div class="text-sm">
+                      <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
+                        @click="decreaseQuantity(item.key)">mdi-minus</v-icon>
+                      <span class="mx-2">{{ item.quantity }}</span>
+                      <v-icon class="border cursor-pointer hover:bg-gray-200 p-2"
+                        @click="increaseQuantity(item.key)">mdi-plus</v-icon>
+                    </div>
+                    <div class="text-sm">
+                      <span class="text-red-600 font-bold mr-2">{{ formatPrice(item.finalPrice) }}₫</span>
+                      <span v-if="item.price" class="text-gray-400 ml-2 line-through">
+                        {{ formatPrice(item.price) }}₫
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </v-card-text>
@@ -56,12 +63,6 @@
         <V-img :src="emptyCart" class="p-8"></V-img>
         <v-card-text>
           <div class="w-full text-center">Chưa có sản phẩm nào trong giỏ hàng...😃🐷🐸</div>
-          <!-- <div class="my-4 px-4">
-            <router-link to="/cart" class="underline hover:text-red-500 text-left">
-              <span>Xem chi tiết giỏ hàng</span>
-              <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
-            </router-link>
-          </div> -->
         </v-card-text>
       </div>
 
@@ -70,24 +71,25 @@
           <h4 class="text-left capitalize font-semibold">Tổng tiền:</h4>
           <span class="font-semibold text-red-500">{{ formatPrice(totalPrice) }}₫</span>
         </v-card-text>
-        <v-btn class="bg-red-500 my-2 w-full text-white font-bold rounded-md" flat>Thanh toán</v-btn>
-        <!-- <router-link to="/cart" class="mb-2 block underline hover:text-red-500 text-left">
-          <span>Xem chi tiết giỏ hàng</span>
-          <v-icon size="1.5rem">mdi-chevron-triple-right</v-icon>
-        </router-link> -->
+        <v-btn class="bg-red-500 my-2 w-full text-white font-bold rounded-md" flat @click="handleClickPay">Thanh
+          toán</v-btn>
       </div>
     </v-card>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits, computed } from "vue";
+import { ref, watch, defineProps, defineEmits, computed, onMounted } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-
+import { useRouter } from "vue-router";
 import emptyCart from "@/assets/images/e-commerce/cart/empty-cart-pAeBGkae.svg";
-import insta1 from "@/assets/images/e-commerce/home/insta1.jpg";
+import image_error from "@/assets/images/e-commerce/404/image_error.png";
+import { getCloudinaryUrl } from "@/utils/cloudinary";
+import { useCartStore } from "@/stores/useCartStore";
+import { useCartSelectionStore } from "@/stores/useCartSelectionStore";
 
 const { xs, sm, mdAndUp } = useDisplay();
+const router = useRouter();
 
 const drawerWidth = computed(() => {
   if (xs.value) return 300; // Kích thước nhỏ
@@ -103,110 +105,27 @@ const props = defineProps({
   }
 });
 
-// const cartItems = ref([]);
+const cartSelectionStore = useCartSelectionStore();
+const cartStore = useCartStore();
+const cartViews = computed(() => cartStore.cartItems);
+const cartItems = ref([]);
 
-const cartItems = ref([
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO NỈ HỌA TIẾT IN LOGO GLORY FWTW012",
-    color: "Xanh đá đậm",
-    size: "S",
-    quantity: 4,
-    price: 450000,
+// Gán dữ liệu ngay khi component mounted
+onMounted(() => {
+  cartItems.value = cartViews.value.map(item => ({
+    ...item,
     selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
+  }));
+  console.log("cartItems: ", cartItems.value);
+});
+
+// Theo dõi sự thay đổi của cartViews và cập nhật cartItems
+watch(cartViews, (newCart) => {
+  cartItems.value = newCart.map(item => ({
+    ...item,
     selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-  {
-    image: insta1,
-    code: "EDB30436464",
-    name: "ÁO KHOÁC NỈ VẢI HIỆU ỨNG ĐÁP LOGO HORSE CAO SU FWCS004",
-    color: "Nâu nhạt",
-    size: "S",
-    quantity: 1,
-    price: 549000,
-    selected: false,
-  },
-]);
+  }));
+}, { deep: true });
 
 const totalPrice = computed(() => {
   return cartItems.value
@@ -234,17 +153,40 @@ const handleClose = () => {
 const cartTitle = ref("Giỏ hàng");
 
 
+// Xóa sản phẩm khỏi giỏ hàng
+const removeItem = (key) => {
+  cartStore.removeFromCart(key);
+};
+
+// Giảm số lượng sản phẩm
+const decreaseQuantity = (key) => {
+  if (cartStore.cart[key] && cartStore.cart[key].quantity > 1) {
+    cartStore.cart[key].quantity--;
+  }
+};
+
+// Tăng số lượng sản phẩm
+const increaseQuantity = (key) => {
+  if (cartStore.cart[key] && cartStore.cart[key].quantity < cartStore.cart[key].stock) {
+    cartStore.cart[key].quantity++;
+  }
+};
+
 // Định dạng giá
 const formatPrice = (price) => price.toLocaleString("vi-VN");
 
-const increaseQuantity = (index) => {
-  cartItems.value[index].quantity++;
-};
-const decreaseQuantity = (index) => {
-  if (cartItems.value[index].quantity > 1) {
-    cartItems.value[index].quantity--;
-  }
-};
+// Hàm handleClick lấy ra các key của sản phẩm có selected = true và chuyển sang trang đặt hàng
+const handleClickPay = () => {
+  cartSelectionStore.clearSelection();
+
+  const selectedKey = cartItems.value
+    .filter(item => item.selected)
+    .map(item => item.key);
+
+  cartSelectionStore.addSelectedKey(selectedKey);
+
+  router.push("/checkout");
+}
 </script>
 
 <style lang="scss" scoped>

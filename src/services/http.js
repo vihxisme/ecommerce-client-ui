@@ -32,7 +32,7 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API Error:", error.response);
+    console.error("HTTP: API Error:", error.response);
     return Promise.reject(error);
   }
 );
