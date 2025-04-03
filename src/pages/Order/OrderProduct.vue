@@ -62,37 +62,40 @@
           </v-card-title>
           <v-form>
             <!-- Họ và tên -->
-            <v-text-field label="Họ và tên" class="op:v-text-field" outlined required></v-text-field>
+            <v-text-field v-model="name" label="Họ và tên" class="op:v-text-field" outlined required></v-text-field>
 
             <div class="flex-mnw-768 gap-4">
               <!-- Họ và tên -->
-              <v-text-field label="Email" type="email" outlined required
+              <v-text-field v-model="email" label="Email" type="email" outlined required
                 class="basic-3/5 op:v-text-field"></v-text-field>
 
               <!-- Số điện thoại -->
-              <v-text-field label="Số điện thoại" type="tel" outlined required
+              <v-text-field v-model="tel" label="Số điện thoại" type="tel" outlined required
                 class="basic-2/5 op:v-text-field"></v-text-field>
             </div>
 
             <!-- Địa chỉ -->
-            <v-text-field label="Địa chỉ" class="op:v-text-field" outlined required></v-text-field>
+            <v-text-field v-model="address" label="Địa chỉ" class="op:v-text-field" outlined required></v-text-field>
 
             <div class="flex-mnw-768 gap-4">
               <!-- Tỉnh / Thành -->
-              <v-select v-model="provincesOptions" :items="provinces" class="op:v-text-field" label="Tỉnh / Thành"
-                outlined></v-select>
+              <v-select v-model="selectedProvince" :items="filteredProvinces" class="op:v-text-field"
+                label="Tỉnh / Thành" outlined @focus="startSearchingProvince" item-title="name" return-object>
+              </v-select>
 
               <!-- Quận / Huyện -->
-              <v-select v-model="districtsOptions" :items="districts" class="bop:v-text-field" label="Quận / Huyện"
-                outlined></v-select>
+              <v-select v-model="selectedDistrict" :items="filteredDistricts" class="bop:v-text-field"
+                label="Quận / Huyện" outlined @focus="startSearchingDistrict" item-title="name" return-object>
+              </v-select>
 
               <!-- Phường / Xã -->
-              <v-select v-model="wardsOptions" :items="wards" class="op:v-text-field" label="Phường / Xã"
-                outlined></v-select>
+              <v-select v-model="selectedWard" :items="filteredWards" class="op:v-text-field" label="Phường / Xã"
+                outlined @focus="startSearchingWard" item-title="name" return-object>
+              </v-select>
             </div>
 
             <!-- Ghi chú -->
-            <v-textarea label="Ghi chú đơn hàng" outlined></v-textarea>
+            <v-textarea v-model="note" label="Ghi chú đơn hàng" outlined></v-textarea>
           </v-form>
         </v-card>
       </v-col>
@@ -105,8 +108,13 @@
             Phương thức vận chuyển
           </v-card-title>
           <v-card-text class="my-2">
-            <v-alert type="info" border="left" color="blue-lighten-4" icon="mdi-map-marker">
-              Vui lòng chọn quận / huyện để có danh sách phương thức vận chuyển
+            <v-alert v-if="selectedDistrict.code === -1" type="warning" border="left" color="yellow-lighten-4"
+              icon="mdi-alert">
+              Vui lòng chọn quận/huyện trước
+            </v-alert>
+            <v-alert v-else-if="selectedDistrict.code !== -1" type="info" border="left" color="blue-lighten-4"
+              icon="mdi-map-marker">
+              FreeShip
             </v-alert>
           </v-card-text>
         </v-card>
@@ -166,11 +174,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineProps, defineEmits, computed } from 'vue';
+import { ref, onMounted, watch, defineProps, defineEmits, computed, watchEffect } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useCartStore } from '@/stores/useCartStore';
 import { useCartSelectionStore } from '@/stores/useCartSelectionStore';
 import { getCloudinaryUrl } from '@/utils/cloudinary';
+import { AddressService } from '@/services/apis/address';
 import image_error from '@/assets/images/e-commerce/404/image_error.png';
 
 const { xsAndDown, smAndUp } = useDisplay();
@@ -210,29 +219,80 @@ const totalPrice = computed(() => {
 // Định dạng giá
 const formatPrice = (price) => price.toLocaleString("vi-VN");
 
-const increaseQuantity = (index) => {
-  cartItems.value[index].quantity++;
-};
-const decreaseQuantity = (index) => {
-  if (cartItems.value[index].quantity > 1) {
-    cartItems.value[index].quantity--;
-  }
-};
-
 const capitalizeWord = (sentense) => {
   return sentense.split(" ").map((word) => {
     return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
   }).join(" ");
 }
 
+// --- SETUP ADDRESS --
+const provinceDefault = ref({ name: "Chọn tỉnh/TP", code: -1, districts: [] });
+const filteredProvinces = ref([provinceDefault.value]);
+const selectedProvince = ref(filteredProvinces.value[0]);
+const districtDefault = ref({ name: "Chọn quận/huyện", code: -1, wards: [] });
+const filteredDistricts = ref([districtDefault.value]);
+const selectedDistrict = ref(filteredDistricts.value[0]);
+const wardDefault = ref({ name: "Chọn đường/xã/phố/phường", code: -1 });
+const filteredWards = ref([wardDefault.value]);
+const selectedWard = ref(filteredWards.value[0]);
 
-const provinces = ref(['Hà Nội', 'Hồ Chí Minh', 'Đà Nẵng', 'Thừa Thiên Huế']);
-const districts = ref(['Hoàn Kiếm', 'Ba Đình', 'Cầu Giấy', 'Huyện Dương Minh Châu']);
-const wards = ref(['Phường 1', 'Phường 2', 'Phường 3', 'Xã Đông Hoàng Long']);
+const startSearchingProvince = async () => {
+  if (filteredProvinces.value.length === 1) {
+    const provinces = await AddressService.fetchProvinces();
+    filteredProvinces.value = [provinceDefault.value, ...provinces];
+  }
+}
 
-const provincesOptions = ref(provinces.value[0]);
-const districtsOptions = ref(districts.value[0]);
-const wardsOptions = ref(wards.value[0]);
+const startSearchingDistrict = async () => {
+  if (filteredDistricts.value.length === 1 && selectedProvince.value.code !== -1) {
+    const districts = await AddressService.fetchDistricts(selectedProvince.value.code);
+    filteredDistricts.value = [districtDefault.value, ...districts];
+  }
+}
+
+const startSearchingWard = async () => {
+  if (filteredWards.value.length === 1 && selectedDistrict.value.code !== -1) {
+    const wards = await AddressService.fetchWards(selectedDistrict.value.code);
+    filteredWards.value = [wardDefault.value, ...wards];
+  }
+}
+
+watch(selectedProvince, (nValue) => {
+  filteredDistricts.value = [districtDefault.value];
+  selectedDistrict.value = filteredDistricts.value[0];
+  if (nValue.code !== -1) {
+    startSearchingDistrict();
+  }
+})
+
+watch(selectedDistrict, (nValue) => {
+  filteredWards.value = [wardDefault.value];
+  selectedWard.value = filteredWards.value[0];
+  if (nValue.code !== -1) {
+    startSearchingWard();
+  }
+})
+
+// form data
+const name = ref();
+const email = ref();
+const tel = ref();
+const note = ref();
+const address = ref();
+// 📝 Cập nhật địa chỉ tự động khi người dùng nhập hoặc chọn tỉnh/quận/xã
+// const fullAddress = computed(() => {
+//   const parts = [address.value];
+
+//   if (selectedWard.value.code !== -1) parts.push(selectedWard.value.name);
+//   if (selectedDistrict.value.code !== -1) parts.push(selectedDistrict.value.name);
+//   if (selectedProvince.value.code !== -1) parts.push(selectedProvince.value.name);
+
+//   return parts.filter(Boolean).join(', '); // Loại bỏ phần trống
+// });
+// 📌 Theo dõi sự thay đổi của tỉnh/quận/xã để cập nhật lại địa chỉ
+// watch([selectedProvince, selectedDistrict, selectedWard], () => {
+//   address.value = fullAddress.value;
+// });
 </script>
 
 <style lang="scss" scoped>
