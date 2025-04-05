@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, watch } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
@@ -104,6 +104,10 @@ const fetchProducts = async () => {
 };
 
 onMounted(() => {
+  fetchProducts();
+})
+
+watch(() => {
   fetchProducts();
 })
 </script>

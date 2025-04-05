@@ -1,5 +1,11 @@
 <template>
   <v-container class="p-0" :class="{ 'v-container--fluid': xsAndDown, 'v-container': smAndUp }">
+    <v-snackbar v-model="isNoti" :timeout="5000" location="top right" :color="isSuccess ? 'success' : 'error'">
+      {{ isSuccess ? "Đặt hàng thành công!" : "Đặt hàng thất bại!" }}
+    </v-snackbar>
+    <v-snackbar v-model="isError" :timeout="5000" location="top right" color="error">
+      {{ "Có lỗi xảy ra!" }}
+    </v-snackbar>
     <v-card class="shadow-none border-b my-4">
       <v-card-title class="px-8">
         <router-link to="/" class="text-left">
@@ -167,7 +173,7 @@
         </v-card>
 
         <!-- Button đặt hàng -->
-        <v-btn block color="success" class="my-8">Đặt hàng</v-btn>
+        <v-btn block color="success" class="my-8" @click="handleSubmitOrder">Đặt hàng</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -181,6 +187,7 @@ import { useCartSelectionStore } from '@/stores/useCartSelectionStore';
 import { getCloudinaryUrl } from '@/utils/cloudinary';
 import { AddressService } from '@/services/apis/address';
 import image_error from '@/assets/images/e-commerce/404/image_error.png';
+import { submitOrder } from '@/services/apis/orderService';
 
 const { xsAndDown, smAndUp } = useDisplay();
 const cartStore = useCartStore();
@@ -232,7 +239,7 @@ const selectedProvince = ref(filteredProvinces.value[0]);
 const districtDefault = ref({ name: "Chọn quận/huyện", code: -1, wards: [] });
 const filteredDistricts = ref([districtDefault.value]);
 const selectedDistrict = ref(filteredDistricts.value[0]);
-const wardDefault = ref({ name: "Chọn đường/xã/phố/phường", code: -1 });
+const wardDefault = ref({ name: "Chọn phố/xã", code: -1 });
 const filteredWards = ref([wardDefault.value]);
 const selectedWard = ref(filteredWards.value[0]);
 
@@ -279,20 +286,74 @@ const email = ref();
 const tel = ref();
 const note = ref();
 const address = ref();
-// 📝 Cập nhật địa chỉ tự động khi người dùng nhập hoặc chọn tỉnh/quận/xã
-// const fullAddress = computed(() => {
-//   const parts = [address.value];
+const shippingFee = ref(0);
+const shippingAddressRequest = ref();
+const orderRequest = ref();
+const orderItemRequest = ref();
 
-//   if (selectedWard.value.code !== -1) parts.push(selectedWard.value.name);
-//   if (selectedDistrict.value.code !== -1) parts.push(selectedDistrict.value.name);
-//   if (selectedProvince.value.code !== -1) parts.push(selectedProvince.value.name);
+const getDataFrom = () => {
+  shippingAddressRequest.value = {
+    name: name.value,
+    email: email.value,
+    phone: tel.value,
+    address: address.value,
+    ward: selectedWard.value.code,
+    district: selectedDistrict.value.code,
+    province: selectedProvince.value.code,
+    fullAddress: `${address.value}, ${selectedWard.value.name}, ${selectedDistrict.value.name}, ${selectedProvince.value.name}`,
+    note: note.value,
+  }
+}
 
-//   return parts.filter(Boolean).join(', '); // Loại bỏ phần trống
-// });
-// 📌 Theo dõi sự thay đổi của tỉnh/quận/xã để cập nhật lại địa chỉ
-// watch([selectedProvince, selectedDistrict, selectedWard], () => {
-//   address.value = fullAddress.value;
-// });
+const getOrderData = () => {
+  orderRequest.value = {
+    userId: "",
+    totalAmount: totalPrice.value,
+    shippingFee: shippingFee.value,
+  }
+}
+
+const getOrderItemData = () => {
+  orderItemRequest.value = cartItems.value.map(item => {
+    return {
+      productId: item.id,
+      prodVariantId: item.prodVariantId,
+      quantity: item.quantity,
+      price: item.finalPrice,
+      totalPrice: item.finalPrice * item.quantity,
+    }
+  })
+}
+
+const isNoti = ref(false);
+const isSuccess = ref(false);
+const isError = ref(false);
+const handleSubmitOrder = async () => {
+  getDataFrom();
+  getOrderData();
+  getOrderItemData();
+
+  try {
+    const request = {
+      variable_1: orderRequest.value,
+      variable_2: orderItemRequest.value,
+      variable_3: shippingAddressRequest.value
+    };
+
+    const res = await submitOrder(request);
+    if (res.data.message === "SUCCESS") {
+      isNoti.value = true;
+      isSuccess.value = true;
+    } else {
+      isNoti.value = true;
+      isSuccess.value = false;
+    }
+    console.log("Log SubmitOrder: ", res.data);
+  } catch (error) {
+    isError.value = true;
+    console.log("OrderProduct: SubmitOrder: API_Error:", error);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
