@@ -4,10 +4,10 @@ import NewProduct from "@/pages/Products/NewProduct.vue";
 import PromoProduct from "@/pages/Products/PromoProduct.vue";
 import ProductDetails from "@/pages/Products/ProductDetails.vue";
 import OrderProduct from "@/pages/Order/OrderProduct.vue";
-import LoginPage from "@/pages/Login/LoginPage.vue";
 import OfCustomerPage from "@/pages/OfCustomer/OfCustomerPage.vue";
 import ByCategory from "@/pages/Products/ByCategory.vue";
 import ShirtPants from "@/pages/Products/ShirtPants.vue";
+import AuthPage from "@/pages/Auth/AuthPage.vue";
 
 const routes = [
   {
@@ -58,9 +58,9 @@ const routes = [
     component: OrderProduct
   },
   {
-    path: "/login",
-    name: "LoginPage",
-    component: LoginPage
+    path: "/auth",
+    name: "Auth",
+    component: AuthPage
   }
 ];
 
