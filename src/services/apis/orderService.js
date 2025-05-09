@@ -26,6 +26,7 @@ export const submitOrder = (request) => {
       province: request.variable_3.province,
       fullAddress: request.variable_3.fullAddress,
       note: request.variable_3.note,
-    }
+    },
+    paymentMethod: request.paymentMethod
   });
 }

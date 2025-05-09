@@ -82,7 +82,7 @@ export const useCategoryStore = defineStore("category", () => {
   const pantsCategories = computed(() =>
     categories.value
       .filter((c) => c.apparelType === 2)
-      .map((c) => ({ id: c.id, text: c.name, link: `/colections/${c.slug}` }))
+      .map((c) => ({ id: c.id, text: c.name, link: `/collections/${c.slug}` }))
   );
 
   return {

@@ -9,8 +9,8 @@
 
       <!-- nội dung -->
       <v-card-text class="relative bg-gray-200 rounded py-8 px-8 my-4">
-        <swiper :ref="swiperRef" :modules="[Autoplay, Navigation, Pagination]" :slides-per-view="6" :loop="true"
-          :autoplay="{ delay: 5000 }" :breakpoints="{
+        <swiper v-if="promoProducts.length" :ref="swiperRef" :modules="[Autoplay, Navigation, Pagination]"
+          :slides-per-view="6" :loop="true" :autoplay="{ delay: 5000 }" :breakpoints="{
             0: { slidesPerView: 1, spaceBetween: 4 },
             640: { slidesPerView: 2, spaceBetween: 8 },
             768: { slidesPerView: 3, spaceBetween: 10 },
@@ -40,20 +40,20 @@
         </swiper>
       </v-card-text>
 
-      <v-card-action class="block m-4 p-4">
-        <v-btn
+      <v-card-actions class="block m-4 p-4">
+        <v-btn variant="elevated"
           class="text-center text-lg bg-transparent uppercase rounded border-blueGray-300 md:text-xs hover:bg-orange-500 transition ease-in-out">
-          <router-link>
+          <router-link to="/collections/onsale">
             <span>{{ promoProductAction }}</span>
           </router-link>
         </v-btn>
-      </v-card-action>
+      </v-card-actions>
     </v-container>
   </v-card>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue";
+import { ref, onMounted, reactive, nextTick, watch } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
@@ -73,7 +73,7 @@ const promoProductTitle = ref("Sản phẩm khuyến mãi");
 const promoProductAction = ref("Xem tất cả sản phẩm khuyến mãi");
 
 const loading = ref(false);
-const promoProducts = ref([]);
+const promoProducts = reactive([]);
 const page = ref(1);
 const size = ref(15);
 
@@ -86,16 +86,17 @@ const fetchProducts = async () => {
     };
 
     const res = await getPromoProduct(request);
-    promoProducts.value = res.data.data.content; // giả sử backend trả về content, totalElements, ...
+    promoProducts.length = 0; // clear trước
+    promoProducts.push(...res.data.data.content);
     console.log(res.data);
 
     // ✅ Bắt Swiper autoplay lại
-    await nextTick();
-    setTimeout(() => {
-      if (swiperRef.value?.swiper) {
-        swiperRef.value.swiper.autoplay.start(); // Khởi động autoplay
-      }
-    }, 1000);
+    // await nextTick();
+    // setTimeout(() => {
+    //   if (swiperRef.value?.swiper) {
+    //     swiperRef.value.swiper.autoplay.start(); // Khởi động autoplay
+    //   }
+    // }, 1000);
   } catch (error) {
     console.error("PromoProductList: API_Error:", error);
   } finally {
@@ -104,10 +105,6 @@ const fetchProducts = async () => {
 };
 
 onMounted(() => {
-  fetchProducts();
-})
-
-watch(() => {
   fetchProducts();
 })
 </script>

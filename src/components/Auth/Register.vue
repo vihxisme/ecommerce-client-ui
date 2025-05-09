@@ -10,7 +10,7 @@
       {{ contentNoti }}
     </v-snackbar>
     <v-form>
-      <v-card class="p-8 shadow-none">
+      <v-card class="pt-4 shadow-none">
         <div>
           <v-text-field v-model="username" label="Tên đăng nhập" class="rgt:v-text-field" outlined
             required></v-text-field>

@@ -54,3 +54,20 @@ export const getProductDetails = (id) => {
     }
   });
 }
+
+export const getAll = (request) => {
+  return http.get(`/product/v1/products/info/all`, {
+    params: {
+      page: request.page,
+      size: request.size
+    }
+  });
+}
+
+export const getTopProductsByRevenue = (request) => {
+  return http.get(`/product/v1/products/top-product/with-discount`, {
+    params: {
+      limit: request.limit,
+    }
+  });
+}

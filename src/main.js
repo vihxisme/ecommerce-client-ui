@@ -5,7 +5,7 @@ import App from "./App.vue";
 
 // Vue Router
 import { createRouter, createWebHistory } from "vue-router";
-import routes from "@/routes/routes";
+import routes from "@/routes/router";
 
 // Vuetify
 import "vuetify/styles"; // Vuetify styles

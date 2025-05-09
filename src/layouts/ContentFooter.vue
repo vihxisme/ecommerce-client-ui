@@ -3,7 +3,8 @@
     <v-container class="p-0" :class="{ 'v-container--fluid': lgAndDown, 'v-container': xlAndUp }">
       <v-row>
         <!-- Cột 1: Giới thiệu thương hiệu -->
-        <v-col cols="12" sm="6" md="3" order="1" class="text-left pt-16 mt-3 md:mt-3 md:border-r-2 md:border-b-2 p-8">
+        <v-col cols="12" sm="6" md="3" order="2" order-sm="1"
+          class="text-left pt-16 mt-3 md:mt-3 md:border-r-2 md:border-b-2 p-8">
           <h3 class="text-red-600 font-bold text-xl my-2 py-2">{{ brandName }}</h3>
           <p class="text-gray-700 text-sm">
             {{ brandDescription }}
@@ -21,13 +22,14 @@
 
           <!-- Phương thức thanh toán -->
           <h4 class="text-base font-bold mt-4">{{ paymentTitle }}</h4>
-          <div class="flex flex-wrap mt-2 space-x-2">
-            <img v-for="(img, i) in paymentMethods" :key="i" :src="img" class="h-8" />
+          <div class="flex flex-wrap mt-2 gap-2">
+            <img v-for="(img, i) in paymentMethods" :key="i" :src="img" width="50px" height="32px" class="h-8" />
           </div>
         </v-col>
 
         <!-- Cột 2: Thông tin liên hệ -->
-        <v-col cols="12" sm="6" md="3" order="2" class="text-left pt-16 md:mt-3 border-r-2 md:border-b-2 p-8">
+        <v-col cols="12" sm="6" md="3" order="3" order-sm="2"
+          class="text-left pt-16 md:mt-3 border-r-2 md:border-b-2 p-8">
           <h3 class="text-red-600 font-bold text-xl my-2 py-2">{{ contactTitle }}</h3>
           <div v-for="(value, key) in contactInfo" :key="key" class="text-sm">
             <p class="my-2">
@@ -37,13 +39,14 @@
 
           <!-- Phương thức vận chuyển -->
           <h4 class="text-base font-bold mt-4">{{ shippingTitle }}</h4>
-          <div class="flex flex-wrap mt-2 space-x-2">
+          <div class="flex flex-wrap mt-2 gap-2">
             <img v-for="(img, i) in shippingMethods" :key="i" :src="img" class="h-8" />
           </div>
         </v-col>
 
         <!-- Cột 3: Nhóm liên kết -->
-        <v-col cols="12" sm="6" md="3" order="3" class="text-left pt-16 md:mt-3 md:border-r-2 ct:border-b-2 p-8">
+        <v-col cols="12" sm="6" md="3" order="4" order-sm="3"
+          class="text-left pt-16 md:mt-3 md:border-r-2 ct:border-b-2 p-8">
           <h3 class="text-red-600 font-bold text-xl my-2 py-2">{{ linkGroup }}</h3>
           <v-list class="text-sm space-y-2 bg-transparent">
             <v-list-item v-for="(link, i) in links" :key="i" :to="link"
@@ -54,7 +57,7 @@
         </v-col>
 
         <!-- Cột 4: Đăng ký nhận tin -->
-        <v-col cols="12" sm="6" md="3" order="4" class="text-left pt-16 md:mt-3 px-8 ct:pb-8">
+        <v-col cols="12" sm="6" md="3" order="1" order-sm="4" class="text-left pt-16 md:mt-3 px-8 ct:pb-8">
           <h3 class="text-red-600 font-bold text-xl my-2 py-2">{{ subscriptionTitle }}</h3>
           <p class="text-sm">
             {{ subscriptionDescription }}
@@ -81,6 +84,16 @@
 import { ref } from "vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { faFacebook, faTwitter, faInstagram, faTiktok, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import payment_1_img from '@/assets/images/e-commerce/footer/payment_1_img.png';
+import payment_2_img from '@/assets/images/e-commerce/footer/payment_2_img.png';
+import payment_3_img from '@/assets/images/e-commerce/footer/payment_3_img.png';
+import payment_4_img from '@/assets/images/e-commerce/footer/payment_4_img.png';
+import payment_5_img from '@/assets/images/e-commerce/footer/payment_5_img.png';
+import payment_6_img from '@/assets/images/e-commerce/footer/payment_6_img.png';
+import shipment_1_img from '@/assets/images/e-commerce/footer/shipment_1_img.png';
+import shipment_2_img from '@/assets/images/e-commerce/footer/shipment_2_img.png';
+import shipment_3_img from '@/assets/images/e-commerce/footer/shipment_3_img.png';
+import shipment_4_img from '@/assets/images/e-commerce/footer/shipment_4_img.png';
 
 const { lgAndDown, xlAndUp } = useDisplay();
 
@@ -94,12 +107,12 @@ const brandDescription = ref(
 // Tiêu đề và phương thức thanh toán
 const paymentTitle = ref("Phương thức thanh toán");
 const paymentMethods = ref([
-  "https://via.placeholder.com/50x30", // VNPay
-  "https://via.placeholder.com/50x30", // ZaloPay
-  "https://via.placeholder.com/50x30", // Moca
-  "https://via.placeholder.com/50x30", // Kredivo
-  "https://via.placeholder.com/50x30", // Napas
-  "https://via.placeholder.com/50x30", // VISA
+  payment_1_img, // VNPay
+  payment_2_img, // ZaloPay
+  payment_3_img, // Moca
+  payment_4_img, // Kredivo
+  payment_5_img, // Napas
+  payment_6_img, // VISA
 ]);
 
 // Các biểu tượng mạng xã hội
@@ -132,10 +145,10 @@ const formatKey = (key) => {
 
 const shippingTitle = ref("Phương thức vận chuyển");
 const shippingMethods = ref([
-  "https://via.placeholder.com/50x30", // GHN
-  "https://via.placeholder.com/50x30", // Ninja Van
-  "https://via.placeholder.com/50x30", // Ahamove
-  "https://via.placeholder.com/50x30", // J&T Express
+  shipment_1_img, // GHN
+  shipment_2_img, // Ninja Van
+  shipment_3_img, // Ahamove
+  shipment_4_img, // J&T Express
 ]);
 
 

@@ -2590,6 +2590,10 @@ select {
   height: 600px;
 }
 
+.h-700-px {
+  height: 700px;
+}
+
 .text-55 {
   font-size: 55rem;
 }
@@ -3116,7 +3120,7 @@ select {
 }
 
 .opacity-80 {
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .outline-none {
@@ -3626,6 +3630,10 @@ select {
 
 .right-5\/2r {
   right: 2.5rem;
+}
+
+.right-10-px {
+  right: 10px;
 }
 
 .bottom-0 {
@@ -5640,12 +5648,20 @@ fieldset:disabled .btn {
   @include gradient(to right, #007BFF, #28A745);
 }
 
+.bg-gradient-blue-green-to-b {
+  @include gradient(to bottom, #007BFF, #28A745);
+}
+
 .bg-gradient-red-orange {
   @include gradient(to right, #FF5733, #FFC300);
 }
 
 .bg-gradient-purple-pink {
   @include gradient(to right, #6A1B9A, #F06292);
+}
+
+.bg-gradient-purple-pink-to-b {
+  @include gradient(to bottom, #6A1B9A, #F06292);
 }
 
 .bg-gradient-teal-blue {

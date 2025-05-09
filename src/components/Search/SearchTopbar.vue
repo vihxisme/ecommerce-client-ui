@@ -1,8 +1,9 @@
 <template>
-  <v-navigation-drawer v-model="localSearch" @update:model-value="handleClose" height="100%"
-    class="fixed top-0 left-0 right-0 shadow-lg" location="top" :temporary="true" scrim>
-    <v-container :class="xlAndUp ? 'v-container' : 'v-container--fluid'"
-      class="h-full bg-gray-100 flex flex-col justify-center items-center">
+  <v-navigation-drawer v-model="localSearch" @update:model-value="handleClose"
+    class="fixed top-0 left-0 right-0 bg-gray-100 shadow-lg" style="width: 100%;" location="top" :temporary="true"
+    scrim>
+    <v-container :class="{ 'v-container--fluid': mdAndDown, 'v-container': lgAndUp }"
+      class="h-full flex flex-col justify-center items-center">
       <!-- <v-logo class="text-3xl font-bold">Tìm kiếm</v-logo>
       <v-text-field label="Tìm kiếm sản phẩm..." class="w-1/2 grow-0 st:v-text-field" append-inner-icon="mdi-magnify"
         outlined hide-details></v-text-field>
@@ -12,7 +13,7 @@
         <v-icon class="cursor-pointer hover:text-red-500" @click="handleClose">mdi-close</v-icon>
       </div>
       <div class="flex justify-center items-center w-full mt-8">
-        <v-text-field label="Tìm kiếm sản phẩm..." class="w-1/2 grow-0 st:v-text-field" append-inner-icon="mdi-magnify"
+        <v-text-field label="Tìm kiếm sản phẩm..." class="w-8/10 grow-0 st:v-text-field" append-inner-icon="mdi-magnify"
           outlined hide-details></v-text-field>
       </div>
     </v-container>
@@ -23,7 +24,7 @@
 import { ref, watch, defineProps, defineEmits } from 'vue';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 
-const { xlAndUp } = useDisplay();
+const { lgAndUp, mdAndDown } = useDisplay();
 
 const props = defineProps({
   isSearch: {

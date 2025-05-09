@@ -10,6 +10,11 @@
         -{{ product.discountPercentage }}%
       </div>
 
+      <div v-if="product.status !== 'ACTIVE'"
+        class="absolute top-10-px right-10-px bg-red-600 text-white text-xs px-2 py-1 rounded z-100">
+        Hết hàng
+      </div>
+
       <!-- Hình ảnh sản phẩm -->
       <div class="w-full h-full flex items-end justify-center bg-cover object-cover overflow-hidden"
         @mouseover="isDisplayBtn = true" @mouseleave="isDisplayBtn = false">
@@ -17,8 +22,8 @@
         <div
           class="w-full h-full transition-transform duration-300 ease-in-out group-hover:scale-105 hover:scale-6/5 cursor-pointer"
           @click="handleToRouteDetails">
-          <v-img :src="imageUrl" :lazy-src="image_error" gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)"
-            alt="Hình ảnh mô tả sản phẩm" cover>
+          <v-img class="w-full h-full" :src="imageUrl" :lazy-src="image_error"
+            gradient="to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1)" cover>
             <template v-slot:placeholder>
               <v-row class="fill-height" align="center" justify="center">
                 <v-progress-circular indeterminate color="error"></v-progress-circular>
@@ -66,7 +71,7 @@
     </div>
 
     <!-- Thông tin sản phẩm -->
-    <v-card-text class="relative flex flex-col flex-grow py-2 px-4">
+    <v-card-text class="relative flex flex-col flex-grow py-2 px-4 bg-gray-100">
       <div class="flex w-full justify-start items-center space-x-2 mt-1 flex-grow cursor-pointer"
         @click="handleToRouteDetails">
         <h3 class="text-sm text-left capitalize mt-1 clamp-2 overflow-hidden overflow-ellipsis">{{

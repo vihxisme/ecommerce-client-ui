@@ -2,13 +2,14 @@
   <div class="w-full mt-26 rps-mb:mt-16">
     <Breadcrumb />
 
-    <ProductFilterMobile :drawer="showFilter" @update:drawer="showFilter = $event"></ProductFilterMobile>
+    <ProductFilterMobile :drawer="showFilter" @update:drawer="showFilter = $event"
+      @update:price-range="priceRange = $event"></ProductFilterMobile>
 
     <v-container class="p-0" :class="{ 'v-container--fluid': lgAndDown, 'v-container': xlAndUp }">
       <v-card class="w-full px-2 shadow-none">
         <v-row>
           <v-col cols="0" lg="3" class="hidden lg:flex p-0 pt-8">
-            <ProductFilter />
+            <ProductFilter @update:price-range="priceRange = $event" />
           </v-col>
           <v-col cols="12" lg="9" class="p-0">
             <v-container fluid>
@@ -31,7 +32,7 @@
                 <!-- <v-infinite-scroll @load="fetchMoreProducts">
                   <v-progress-circular indeterminate color="success"></v-progress-circular>
                 </v-infinite-scroll> -->
-                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="product in newProducts" :key="product.id"
+                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="product in filteredProducts" :key="product.id"
                   class="flex justify-center items-center">
                   <div class="w-250-px h-400-px">
                     <BoxProduct :product="product" />
@@ -76,6 +77,15 @@ const pageSize = ref(16);
 const totalPages = ref();
 const totalElements = ref();
 const loading = ref(false);
+
+const priceRange = ref([0, 10000000]);
+
+const filteredProducts = computed(() => {
+  return newProducts.value.filter((product) => {
+    return product.finalPrice >= priceRange.value[0] && product.finalPrice <= priceRange.value[1];
+  });
+});
+
 
 const fetchNewProducts = async () => {
   loading.value = true;

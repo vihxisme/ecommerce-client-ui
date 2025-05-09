@@ -7,10 +7,13 @@ export const useCartSelectionStore = defineStore('cartSelection', {
 
   actions: {
     // Thêm key vào danh sách chọn
-    addSelectedKey(key) {
-      if (!this.selectedKeys.includes(key)) {
-        this.selectedKeys.push(key);
-      }
+    addSelectedKeys(keys) {
+      const flatKeys = keys.flat(); // phòng trường hợp truyền mảng lồng nhau
+      flatKeys.forEach((key) => {
+        if (!this.selectedKeys.includes(key)) {
+          this.selectedKeys.push(key);
+        }
+      });
     },
 
     // Xóa key khỏi danh sách chọn
@@ -42,8 +45,12 @@ export const useCartSelectionStore = defineStore('cartSelection', {
       {
         key: 'cart_selection',
         storage: localStorage,
-        paths: ['selectedKeys'], // Chỉ lưu selectedKeys
+        paths: ['selectedKeys'],
+        serialize: (value) => JSON.stringify({ selectedKeys: value.selectedKeys }), // ✅ giữ nguyên structure
+        deserialize: (data) => JSON.parse(data) // ✅ không cần bọc lại nữa
       }
     ]
   }
+
+
 });

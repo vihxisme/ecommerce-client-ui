@@ -19,38 +19,51 @@
       </v-container>
     </v-card-text>
 
-    <v-card-action class=" block m-4 p-4">
+    <!-- <v-card-actions class=" block m-4 p-4">
       <v-btn
         class="text-center text-lg bg-transparent uppercase rounded border-blueGray-300 md:text-xs hover:bg-orange-500 transition ease-in-out">
         <router-link>
           <span>{{ bestSellingProductsAction }}</span>
         </router-link>
       </v-btn>
-    </v-card-action>
+    </v-card-actions> -->
   </v-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 
 import BoxProduct from "../Products/BoxProduct.vue";
 
-import image_insta6 from "@/assets/images/e-commerce/home/insta6.jpg";
+import { getTopProductsByRevenue } from "@/services/apis/productService";
 
 const bestsellingProductTitle = ref("Sản phẩm bán chạy");
 const bestSellingProductsAction = ref("Xem tất cả sản phẩm");
+const bestSellingProducts = reactive([]);
 
+const page = ref(2);
+const size = ref(16);
+const loading = ref(false);
 
-const bestSellingProducts = ref(
-  Array.from({ length: 12 }, () => ({
-    productImageUrl: image_insta6,
-    discountPercentage: 20,
-    colors: 5,
-    sizes: 4,
-    name: "Áo len mới cứng bán siêu chạy siêu chạy",
-    productCode: "EWCW008678670",
-    price: 600000,
-    finalPrice: 480000,
-  }))
-);
+const fetchNewProducts = async () => {
+  loading.value = true;
+  try {
+    const request = {
+      limit: size.value,
+    };
+
+    const res = await getTopProductsByRevenue(request);
+    bestSellingProducts.length = 0; // clear trước
+    bestSellingProducts.push(...res.data.data);
+    console.log(res.data);
+  } catch (error) {
+    console.error("NewProductList: API_Error:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchNewProducts();
+})
 </script>

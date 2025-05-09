@@ -1,4 +1,10 @@
 const path = require('path');
+// require('dotenv').config();
+
+const dotenv = require('dotenv');
+
+// Load env thủ công
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 module.exports = {
   transpileDependencies: true,
@@ -12,10 +18,10 @@ module.exports = {
     },
   },
   devServer: {
-    port: parseInt(process.env.VUE_APP_PORT) || 8080,
+    port: parseInt(process.env.VUE_APP_PORT),
     proxy: {
       '/api': {
-        target: process.env.VUE_APP_API_URL || 'http://localhost:8888',
+        target: process.env.VUE_APP_API_URL,
         changeOrigin: true,
         // pathRewrite: (path) => path.replace(/^\/api/, ''),
       },

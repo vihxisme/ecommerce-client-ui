@@ -179,11 +179,17 @@ const formatPrice = (price) => price.toLocaleString("vi-VN");
 const handleClickPay = () => {
   cartSelectionStore.clearSelection();
 
+  const hasUnselected = cartItems.value.some(item => item.selected);
+  if (!hasUnselected) {
+    return;
+  }
+
   const selectedKey = cartItems.value
     .filter(item => item.selected)
     .map(item => item.key);
 
-  cartSelectionStore.addSelectedKey(selectedKey);
+  cartSelectionStore.addSelectedKeys(selectedKey);
+
 
   router.push("/checkout");
 }

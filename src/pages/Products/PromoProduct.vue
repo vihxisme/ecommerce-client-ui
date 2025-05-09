@@ -2,13 +2,14 @@
   <div class="w-full mt-26 rps-mb:mt-16">
     <Breadcrumb />
 
-    <ProductFilterMobile :drawer="showFilter" @update:drawer="showFilter = $event"></ProductFilterMobile>
+    <ProductFilterMobile :drawer="showFilter" @update:drawer="showFilter = $event"
+      @update:price-range="priceRange = $event"></ProductFilterMobile>
 
-    <v-container class="p-0" :class="{ 'v-container--fluid': lgAndDown, 'v-container': xlAndUp }">
+    <v-container class="p-0 my-4" :class="{ 'v-container--fluid': lgAndDown, 'v-container': xlAndUp }">
       <v-card class="w-full px-2 shadow-none">
         <v-row>
           <v-col cols="0" lg="3" class="hidden lg:flex p-0 pt-8">
-            <ProductFilter />
+            <ProductFilter @update:price-range="priceRange = $event" />
           </v-col>
           <v-col cols="12" lg="9" class="p-0">
             <v-container fluid>
@@ -27,7 +28,7 @@
                 </div>
               </v-container>
               <v-row>
-                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="product in promoProducts" :key="product.id"
+                <v-col cols="12" sm="4" md="3" lg="3" xl="2" v-for="product in filteredProducts" :key="product.id"
                   class="flex justify-center items-center">
                   <div class="w-250-px h-400-px">
                     <BoxProduct :product="product" />
@@ -36,15 +37,16 @@
               </v-row>
 
               <!-- Infinite Scroll -->
-              <v-infinite-scroll @load="fetchMoreProducts">
+              <!-- <v-infinite-scroll @load="fetchMoreProducts">
                 <div class="text-center" v-if="loading">
                   <v-progress-circular indeterminate :value="100" color="success"></v-progress-circular>
                 </div>
-              </v-infinite-scroll>
+              </v-infinite-scroll> -->
 
               <!-- Pagination -->
-              <v-pagination v-model="pageNumber" :length="totalPage" :total-visible="5" @update:model-value="changePage"
-                class="flex justify-center gap-4 items-center p-4 m-4 np:v-pagination" variant="flat">
+              <v-pagination v-if="totalPages > 1" v-model="pageNumber" :length="totalPages" size="small" color="black"
+                active-color="success" rounded="circle" :total-visible="5" @update:model-value="changePage"
+                class="flex justify-center gap-4 items-center p-4 m-4">
               </v-pagination>
             </v-container>
           </v-col>
@@ -77,6 +79,15 @@ const pageSize = ref(16);
 const totalPages = ref();
 const totalElements = ref();
 const loading = ref(false);
+
+const priceRange = ref([0, 10000000]);
+
+const filteredProducts = computed(() => {
+  return promoProducts.value.filter((product) => {
+    return product.finalPrice >= priceRange.value[0] && product.finalPrice <= priceRange.value[1];
+  });
+});
+
 
 const fetchpromoProducts = async () => {
   loading.value = true;

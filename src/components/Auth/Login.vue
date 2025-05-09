@@ -5,7 +5,7 @@
     </v-alert>
     <v-snackbar v-model="isSuccess" :timeout="7000" location="center center" color="success">
       <div class="flex flex-col gap-4 justify-center items-center">
-        <span class="font-lobster text-lg">Đăng nhập thành công</span>
+        <span class="font-lobster text-lg">Đang xử lý</span>
         <v-progress-circular indeterminate color="white" />
       </div>
     </v-snackbar>
@@ -26,7 +26,7 @@
         <router-link class="hover:underline hover:text-red-500">
           Quên mật khẩu?
         </router-link>
-        <span class="cursor-pointer hover:underline hover:text-red-500" @click="tab = 1">Bạn chưa có tài
+        <span class="cursor-pointer hover:underline hover:text-red-500" @click="updateTab">Bạn chưa có tài
           khoản?</span>
       </div>
     </v-form>
@@ -34,12 +34,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 import { login } from "@/services/apis/authService";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+const emit = defineEmits("update-tab");
 
 const showPassword = ref(false);
 
@@ -58,6 +59,7 @@ const authStore = useAuthStore();
 
 const handleLogin = async () => {
   try {
+    isSuccess.value = true;
     const request = {
       identifier: identifier.value,
       password: password.value,
@@ -70,10 +72,10 @@ const handleLogin = async () => {
     if (data.loginDTO.role === "CUSTOMER") {
       authStore.setAuth(data.token, data.loginDTO);
 
-      isSuccess.value = true;
+
       setTimeout(() => {
         router.push("/home");
-      }, 5000);
+      }, 3000);
 
     } else {
       isShow.value = true;
@@ -84,7 +86,13 @@ const handleLogin = async () => {
     isShow.value = true;
     contenAlert.value = "Có lỗi xảy ra!";
     console.log("Login: API_Error: ", error);
+  } finally {
+    isSuccess.value = false;
   }
+}
+
+const updateTab = () => {
+  emit("update-tab", 1);
 }
 </script>
 

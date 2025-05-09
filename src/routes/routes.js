@@ -1,67 +1,21 @@
-import GeneralLayout from "@/layouts/GeneralLayout.vue";
-import HomePage from "@/pages/Home/HomePage.vue";
-import NewProduct from "@/pages/Products/NewProduct.vue";
-import PromoProduct from "@/pages/Products/PromoProduct.vue";
-import ProductDetails from "@/pages/Products/ProductDetails.vue";
-import OrderProduct from "@/pages/Order/OrderProduct.vue";
-import OfCustomerPage from "@/pages/OfCustomer/OfCustomerPage.vue";
-import ByCategory from "@/pages/Products/ByCategory.vue";
-import ShirtPants from "@/pages/Products/ShirtPants.vue";
-import AuthPage from "@/pages/Auth/AuthPage.vue";
+import { useAuthStore } from '@/stores/auth';
+import { createRouter, createWebHistory } from 'vue-router';
+import routes from './routes'; // hoặc dùng trực tiếp
 
-const routes = [
-  {
-    path: "/",
-    component: GeneralLayout,
-    redirect: "/home",
-    children: [
-      {
-        path: "home",
-        name: "Home",
-        component: HomePage,
-      },
-      {
-        path: "collections/new",
-        name: "New Product",
-        component: NewProduct,
-      },
-      {
-        path: "collections/onsale",
-        name: "Promo Product",
-        component: PromoProduct
-      },
-      {
-        path: "collections/:name/:apparelType",
-        name: "Shirt Pants",
-        component: ShirtPants
-      },
-      {
-        path: "products/details/:productName",
-        name: "Product Details",
-        component: ProductDetails
-      },
-      {
-        path: "account/of-customer",
-        name: "Of Customer",
-        component: OfCustomerPage
-      },
-      {
-        path: "collections/:categorySlug",
-        name: "By Category",
-        component: ByCategory
-      }
-    ],
-  },
-  {
-    path: "/checkout",
-    name: "CheckOut",
-    component: OrderProduct
-  },
-  {
-    path: "/auth",
-    name: "Auth",
-    component: AuthPage
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  const isLoggedIn = !!authStore.isLoggedIn;
+
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/auth'); // 🚧 redirect về trang login
+  } else {
+    next(); // Cho đi tiếp
   }
-];
+});
 
-export default routes;
+export default router;

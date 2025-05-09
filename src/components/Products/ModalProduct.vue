@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="localDialog" @update:model-value="handleClose" class="mp:v-dialog">
     <v-card class="w-full">
+      <v-snackbar v-model="notiShow" :timeout="5000" location="top right" :color="notiColor">
+        {{ notiContent }}</v-snackbar>
       <v-card-title class="fixed top-0 w-full bg-white flex justify-between items-center shadow-md z-100"
         style="border-radius: 4px;">
         <h3 class="mx-4 text-xl">Thông tin sản phẩm</h3>
@@ -171,6 +173,7 @@ import "swiper/css/thumbs";
 import { processProductImages, extractVariantData, extractVariantToSizes, extractVariantToColors, getSizeIdsByColorId } from "@/utils/productUtil";
 import { getCloudinaryUrl } from "@/utils/cloudinary";
 import { getProductDetails } from "@/services/apis/productService";
+import { useCartStore } from "@/stores/useCartStore";
 
 // Nhận dữ liệu sản phẩm từ props
 const props = defineProps({
@@ -183,6 +186,8 @@ const props = defineProps({
     required: true
   }
 });
+
+const cartStore = useCartStore();
 
 // Tạo đường dẫn động đến trang chi tiết sản phẩm
 const prodDetailsRoute = computed(() => `/products/details/${product.name}-${product.productCode}`);
@@ -361,17 +366,21 @@ onMounted(() => {
   }
 });
 
+const notiShow = ref(false);
+const notiColor = ref();
+const notiContent = ref();
+
 const isAddCart = ref(false);
 const handleClickAddCart = () => {
-  const productCart = {};
+  let productCart = {};
   if (selectedColor.value === variant.value.colorId && selectedSize.value === variant.value.sizeId) {
     productCart = {
-      id: productInfo.value.id,
-      productCode: productInfo.value.productCode,
-      name: productInfo.value.name,
-      imageUrl: productInfo.value.productImageUrl,
-      price: productInfo.value.price,
-      finalPrice: productInfo.value.finalPrice,
+      id: product.value.id,
+      productCode: product.value.productCode,
+      name: product.value.name,
+      imageUrl: product.value.productImageUrl,
+      price: product.value.price,
+      finalPrice: product.value.finalPrice,
       variantId: variant.value.id,
       colorId: variant.value.colorId,
       colorName: variant.value.colorName,
@@ -381,9 +390,15 @@ const handleClickAddCart = () => {
       quantity: quantity.value
     };
 
-    cartStore.addToCart(productCart.value);
+    cartStore.addToCart(productCart);
     isAddCart.value = true;
+    notiColor.value = "success";
+    notiContent.value = "Thêm vào giỏ hàng thành công!";
+    notiShow.value = true;
   } else {
+    notiColor.value = "success";
+    notiContent.value = "Thêm vào giỏ hàng thất bại!";
+    notiShow.value = true;
     isAddCart.value = false;
   }
 }

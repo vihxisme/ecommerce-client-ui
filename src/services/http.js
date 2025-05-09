@@ -1,19 +1,19 @@
 import axios from "axios";
 
 const publicEndpoints = [
-  "/v1/products/only-discount",
-  "/v1/products/info/all",
+  "/v1/products/only-discount", ,
   "/another-public-endpoint",
 ];
 
 
 const http = axios.create({
   baseURL: "/api",
-  timeout: 5000,
+  timeout: 10000,
 });
 
 http.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  const authData = JSON.parse(localStorage.getItem("auth"));
+  const token = authData?.token;
 
   // Kiểm tra nếu endpoint thuộc danh sách public
   const isPublicEndpoint = publicEndpoints.some((endpoint) =>

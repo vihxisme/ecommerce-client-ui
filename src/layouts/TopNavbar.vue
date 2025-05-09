@@ -13,7 +13,7 @@
 
             <!-- Logo -->
             <router-link variant="text" to="/home"
-              class="text-3xl font-serif no-select font-extrabold hover:text-blue-600 cursor-pointer transition duration-300"
+              class="text-3xl font-lobster font-serif no-select font-extrabold hover:text-blue-600 cursor-pointer transition duration-300"
               aria-label="Flatlogic">
               BELLION
             </router-link>
@@ -76,13 +76,55 @@
                   <v-icon class="mdi mdi-cart-outline icon-hover text-3xl font-bold" @click="toggleCart"></v-icon>
                 </v-badge>
               </div>
-              <router-link class="mx-2 cursor-pointer" icon aria-label="Notification">
-                <v-badge color="red" content="0" offset-x="0" offset-y="0">
+
+              <!-- notification -->
+              <div>
+                <v-menu v-if="authStore.isLoggedIn" offset-y location="bottom" transition="fade-transition">
+                  <template #activator="{ props }">
+                    <div v-bind="props" class="mx-2 cursor-pointer">
+                      <v-badge color="red" :content="notificationsCount" offset-x="0" offset-y="0" bordered overlap>
+                        <v-icon class="mdi mdi-bell-outline text-3xl font-bold icon-hover"></v-icon>
+                      </v-badge>
+                    </div>
+                  </template>
+
+                  <v-card min-width="300" class="py-2">
+                    <v-list>
+                      <v-list-item v-for="(notification, index) in notifications" :key="index"
+                        class="cursor-pointer hover:bg-gray-100">
+                        <v-list-item-title class="text-xs">{{ notification }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item v-if="notifications.length === 0">
+                        <v-list-item-title>Không có thông báo mới</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
+                <div v-else class="mx-2 cursor-pointer">
                   <v-icon class="mdi mdi-bell-outline icon-hover text-3xl font-bold"></v-icon>
-                </v-badge>
-              </router-link>
-              <router-link to="/login" class="mx-2 cursor-pointer" icon aria-label="Account"><v-icon
-                  class="mdi mdi-account-outline icon-hover text-3xl font-bold"></v-icon></router-link>
+                </div>
+              </div>
+
+              <!-- Account menu -->
+              <div>
+                <v-menu v-if="authStore.isLoggedIn" open-on-hover location="bottom" transition="fade-transition">
+                  <template #activator="{ props }">
+                    <div v-bind="props" class="mx-2 cursor-pointer">
+                      <v-icon icon="mdi-account-outline" class="text-3xl font-bold" />
+                    </div>
+                  </template>
+                  <v-list class="w-200-px">
+                    <v-list-item to="/account/of-customer" link>
+                      <v-list-item-title>Hồ sơ</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="handleLogout" link>
+                      <v-list-item-title>Đăng xuất</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+                <div v-else class="mx-2 cursor-pointer" @click="goToAuth"><v-icon
+                    class="mdi mdi-account-outline icon-hover text-3xl font-bold"></v-icon></div>
+              </div>
             </div>
           </v-container>
         </v-container>
@@ -107,9 +149,12 @@ import SearchTopbar from "@/components/Search/SearchTopbar.vue";
 import { useCategoryStore } from "@/stores/useCategory";
 import { useCartStore } from "@/stores/useCartStore";
 import { useCartStateStore } from "@/stores/useCartStateStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const router = useRouter();
 const route = useRoute();
+const authStore = useAuthStore();
+const authState = computed(() => authStore.isLoggedIn);
 const cartStore = useCartStore();
 const totalItemCart = computed(() => cartStore.totalItems);
 
@@ -145,8 +190,8 @@ const menuItems = ref([
     link: `/collections/${"quan"}/${"2"}`,
     children: [],
   },
-  { text: "Hệ thống cửa hàng", link: "/system-store" },
-  { text: "Ưu đãi", link: "/discount-promotion" }
+  { text: "Hệ thống cửa hàng", link: "/store/he-thong-cua-hang" },
+  // { text: "Ưu đãi", link: "/discount-promotion" }
 ]);
 
 
@@ -171,6 +216,20 @@ const handleMenuItemCategoryClick = async (categoryId, path) => {
   await nextTick();
   router.push(path);
 }
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push("/home");
+}
+
+const goToAuth = () => {
+  router.push("/auth")
+}
+
+const notifications = ref([
+])
+
+const notificationsCount = ref(notifications.value.length)
 </script>
 
 <style scoped>

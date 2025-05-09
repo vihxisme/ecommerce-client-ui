@@ -18,8 +18,7 @@
 
           <v-list-item class="pf:v-list-item__range-price">
             <v-range-slider v-model="priceRange" :min="0" :max="10000000" :step="10" color="blue"
-              track-color="light-blue" thumb-color="red" thumb-label="always" class="px-2 py-8" ticks dense
-              @update:model-value="handlePriceChange">
+              track-color="light-blue" thumb-color="red" thumb-label="always" class="px-2 py-8" ticks dense>
               <template v-slot:thumb-label="{ modelValue }">
                 <span class="text-white">{{ formatPrice(modelValue) }}₫</span>
               </template>
@@ -29,7 +28,7 @@
       </v-list>
 
       <div class="w-full absolute bottom-0 px-4 py-4 border-t flex justify-between items-center">
-        <v-btn class="border mx-2 flex-grow" flat>Lọc</v-btn>
+        <v-btn class="border mx-2 flex-grow" flat @click="handleFiltered">Lọc</v-btn>
         <v-btn class="border mx-2 flex-grow" flat @click="handleClose">Hủy</v-btn>
       </div>
     </v-card>
@@ -83,6 +82,11 @@ const priceRange = ref([0, 10000000]);
 
 const handlePriceChange = (newValue) => {
   emit("update:priceRange", newValue);
+}
+
+const handleFiltered = () => {
+  emit("update:priceRange", priceRange.value);
+  handleClose();
 }
 
 const formatPrice = (price) => price.toLocaleString("vi-VN");

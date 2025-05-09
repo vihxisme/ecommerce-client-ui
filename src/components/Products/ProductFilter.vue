@@ -7,9 +7,9 @@
       <div class="flex items-center my-4 text-left text-gray-700 text-sm font-normal">
         <v-icon size="1rem" class="hover:text-red-500" @click="handleCloseFilterAction">mdi-close</v-icon>
         <span class="mx-1/5">Giá khoảng: </span>
-        <span>{{ formatPrice(priceRange[0]) }}</span>
+        <span>{{ formatPrice(priceRange[0]) }}₫</span>
         <span class="mx-1/5">-</span>
-        <span>{{ formatPrice(priceRange[1]) }}</span>
+        <span>{{ formatPrice(priceRange[1]) }}₫</span>
       </div>
     </div>
 
@@ -28,18 +28,32 @@
         </template>
 
         <!-- Hiển thị Áo, Quần -->
-        <v-list-group v-for="category in categories" :key="category.name" v-model="category.isOpen"
+        <!-- <v-list-group v-for="category in categories" :key="category.name" v-model="category.isOpen"
           expand-icon="mdi-plus" collapse-icon="mdi-minus">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props">
               <v-list-item-title class="text-left font-bold">{{ category.name }}</v-list-item-title>
             </v-list-item>
-          </template>
+          </template> -->
 
-          <!-- Hiển thị danh mục con khi click vào Áo hoặc Quần -->
-          <v-list-item v-for="subCategory in category.subCategories" :key="subCategory"
+        <!-- Hiển thị danh mục con khi click vào Áo hoặc Quần -->
+        <!-- <v-list-item v-for="subCategory in category.subCategories" :key="subCategory"
             class="hover:bg-gray-100 cursor-pointer no-select">
             <v-list-item-title class="text-left">{{ subCategory }}</v-list-item-title>
+          </v-list-item>
+        </v-list-group> -->
+        <v-list-group v-for="category in categories" :key="category.text" v-model="category.isOpen"
+          expand-icon="mdi-plus" collapse-icon="mdi-minus">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" :to="category.link">
+              <v-list-item-title class="text-left font-bold">{{ category.text }}</v-list-item-title>
+            </v-list-item>
+          </template>
+
+          <v-list-item v-for="subCategory in category.children" :key="subCategory.text"
+            class="hover:bg-gray-100 cursor-pointer no-select"
+            @click="handleMenuItemCategoryClick(subCategory.id, subCategory.link)">
+            <v-list-item-title class="text-left">{{ subCategory.text }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
       </v-list-group>
@@ -68,37 +82,47 @@
 </template>
 
 <script setup>
-import { ref, computed, defineProps, defineEmits } from 'vue';
+import { ref, computed, defineEmits, onMounted, watchEffect, nextTick } from 'vue';
+import { useRouter } from 'vue-router';
+import { useCategoryStore } from '@/stores/useCategory';
 
 const emit = defineEmits(["update:priceRange"]);
 
+const categoryStore = useCategoryStore();
+const router = useRouter();
+
 const filterTitle = ref("Bộ lọc");
+
+onMounted(() => {
+  categoryStore.fetchCategories();
+})
 
 const categoryTitle = ref("Danh mục sản phẩm");
 const categories = ref([
   {
-    name: "Áo",
-    subCategories: ["Áo sơ mi", "Áo phông", "Áo khoác", "Áo len", "Áo Polo", "Áo len", "Áo khoác", "Áo Blazer"],
-    link: [
-      "/products/shirt/t-shirt",
-      "/products/shirt/formal-shirt",
-      "/products/shirt/polo-shirt",
-      "/products/shirt/jacket",
-      "/products/shirt/sweater",
-      "/products/shirt/wool-sweater",
-      "/products/shirt/blazer"
-    ]
+    text: "Áo",
+    link: `/collections/${"ao"}/${"1"}`,
+    children: [],
   },
   {
-    name: "Quần",
-    subCategories: ["Quần jeans", "Quần âu", "Quần shorts"],
-    link: [
-      "/products/pants/jeans",
-      "/products/pants/trousers",
-      "/products/pants/shorts"
-    ]
+    text: "Quần",
+    link: `/collections/${"quan"}/${"2"}`,
+    children: [],
   },
 ]);
+
+// Tự động cập nhật menu items khi categories thay đổi
+watchEffect(() => {
+  // Cập nhật danh sách các category cho menu áo/quần
+  categories.value.find((item) => item.text === "Áo").children = categoryStore.shirtCategories;
+  categories.value.find((item) => item.text === "Quần").children = categoryStore.pantsCategories;
+});
+
+const handleMenuItemCategoryClick = async (categoryId, path) => {
+  categoryStore.setSelectedCategory(categoryId);
+  await nextTick();
+  router.push(path);
+}
 
 const isCategoryOpen = ref(false);
 
@@ -106,7 +130,7 @@ const isPriceRange = ref(false);
 const priceRangeTitle = ref("Giá");
 const priceRange = ref([0, 10000000]);
 
-const defaultPriceRange = ref([...priceRange.value]);
+const defaultPriceRange = ref([0, 10000000]);
 const filterAction = ref("Bạn đang xem...");
 
 // Tạo computed để kiểm tra xem giá trị hiện tại có khác giá trị mặc định hay không
@@ -118,7 +142,8 @@ const hasPriceChanged = computed(() => {
 });
 
 const handleCloseFilterAction = () => {
-  return defaultPriceRange.value = priceRange.value;
+  priceRange.value = defaultPriceRange.value;
+  emit("update:priceRange", priceRange.value);
 }
 
 const handlePriceChange = (newValue) => {
