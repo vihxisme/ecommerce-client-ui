@@ -1,0 +1,24 @@
+.focus\:text-field {
+  input:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.icon-social-btn {
+  border-radius: 12px;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .ct\:border-b-2 {
+    border-bottom-width: 2px;
+  }
+
+  .ct\:pb-8 {
+    padding-bottom: 2rem;
+  }
+}

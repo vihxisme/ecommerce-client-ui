@@ -1,0 +1,16 @@
+// Định nghĩa biến màu cho herobanner
+$pagination-bullet-color: rgba(255, 255, 255, 0.5);
+$pagination-bullet-active-color: #ff7f50;
+$pagination-hover-color: rgba(255, 255, 255, 0.9);
+$pagination-default-color: rgba(255, 255, 255, 0.6);
+
+// Định nghĩa SCSS
+$btn-bg-color: #ff6347; // Màu nền mặc định của nút
+$btn-hover-bg-color: #e53e3e; // Màu nền khi hover
+$btn-focus-shadow: #ff6347; // Màu bóng khi focus
+$btn-text-color: white; // Màu chữ của nút
+$btn-border-radius: 12px; // Độ bo tròn
+$btn-padding: 12px 20px; // Padding của nút
+
+$white: rgba(255, 255, 255, 1);
+$black: rgba(0, 0, 0, 1);

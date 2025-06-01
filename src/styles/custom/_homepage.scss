@@ -1,0 +1,36 @@
+.swiper-discounted-products {
+
+  // Custom style cho pagination bullets
+  .swiper-disc-prod-pagination {
+    position: absolute;
+    bottom: 0.5rem; // Căn cách đáy
+    left: 50%; // Căn giữa theo chiều ngang
+    transform: translateX(-50%); // Đảm bảo thật sự ở giữa
+
+    .swiper-pagination-bullet {
+      width: 8px;
+      height: 8px;
+      background-color: $black; // Màu mặc định
+      border-radius: 50%;
+      transition: background-color 0.3s ease, width 0.3s ease;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: $pagination-bullet-active-color;
+    }
+  }
+
+  // Style cho nút Prev & Next
+  .swiper-disc-prod-button-prev,
+  .swiper-disc-prod-button-next {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+    color: black;
+
+    &:hover {
+      color: $btn-bg-color;
+    }
+
+  }
+}

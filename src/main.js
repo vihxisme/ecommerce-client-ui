@@ -1,4 +1,69 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import piniaPersistedState from "pinia-plugin-persistedstate";
+import App from "./App.vue";
 
-createApp(App).mount('#app')
+// Vue Router
+import { createRouter, createWebHistory } from "vue-router";
+import routes from "@/routes/router";
+
+// Vuetify
+import "vuetify/styles"; // Vuetify styles
+import { createVuetify } from "vuetify";
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+
+// font-awesome
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+// Material Design Icons (MDI)
+import "@mdi/font/css/materialdesignicons.css";
+
+import "@/styles/style.css";
+
+// SCSS Styles
+import "@/styles/index.scss";
+
+// Khởi tạo Vue Router
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  }
+});
+
+// Khởi tạo Vuetify
+const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi',  // Sử dụng Material Design Icons
+    aliases,
+  },
+  components,
+  directives,
+  theme: {
+    defaultTheme: 'light',
+    themes: {
+      light: {
+        typography: {
+          fontFamily: 'Montserrat, Roboto, sans-serif',
+        },
+      },
+    },
+  },
+})
+
+const pinia = createPinia();
+pinia.use(piniaPersistedState);
+
+// Khởi tạo ứng dụng Vue
+const app = createApp(App);
+
+app.component('font-awesome-icon', FontAwesomeIcon);
+
+app.use(vuetify); // Đăng ký Vuetify
+app.use(pinia); // Đăng ký Pinia
+app.use(router); // Đăng ký Vue Router
+
+app.mount("#app"); // Mount ứng dụng vào phần tử #app

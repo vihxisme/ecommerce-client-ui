@@ -1,0 +1,54 @@
+.body {
+  margin: 0 !important;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+// Style cho v-btn
+.v-btn {
+  &:focus {
+    outline: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .rps-mb\:mt-14 {
+    margin-top: 3.5rem;
+  }
+
+  .rps-mb\:mt-16 {
+    margin-top: 4rem;
+  }
+}
+
+.ct\:v-select {
+
+  ::v-deep(.v-field__input) {
+    padding: 0;
+  }
+}
+
+::v-deep(.v-field--focused) {
+  border-color: transparent;
+  outline: none;
+}
+
+[type=text]:focus,
+[type=email]:focus,
+[type=url]:focus,
+[type=password]:focus,
+[type=number]:focus,
+[type=date]:focus,
+[type=datetime-local]:focus,
+[type=month]:focus,
+[type=search]:focus,
+[type=tel]:focus,
+[type=time]:focus,
+[type=week]:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: none;
+}

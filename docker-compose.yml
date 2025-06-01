@@ -1,0 +1,17 @@
+services:
+  ecommerce:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce
+    image: ecommerce:1.0
+    ports:
+      - "3333:3333"
+    networks:
+      - microservices-network
+    volumes:
+      - ./logs/nginx:/var/log/nginx
+
+networks:
+  microservices-network:
+    external: true

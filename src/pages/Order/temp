@@ -1,0 +1,32 @@
+const handleSubmitOrder = async () => {
+  const { valid } = await formRef.value.validate(); // ✅ Vuetify 3 format
+  console.log("valid: ", valid);
+  if (!valid) return;
+  try {
+    isProgeressBar.value = true;
+    getDataFrom();
+    getOrderData();
+    getOrderItemData();
+    const request = {
+      variable_1: orderRequest.value,
+      variable_2: orderItemRequest.value,
+      variable_3: shippingAddressRequest.value
+    };
+
+    const res = await submitOrder(request);
+    if (res.data.data != null) {
+      isProgeressBar.value = false;
+      isNoti.value = true;
+      isSuccess.value = true;
+    } else {
+      isProgeressBar.value = false;
+      isNoti.value = true;
+      isSuccess.value = false;
+    }
+    console.log("Log SubmitOrder: ", res.data);
+  } catch (error) {
+    isProgeressBar.value = false;
+    isError.value = true;
+    console.log("OrderProduct: SubmitOrder: API_Error:", error);
+  }
+}

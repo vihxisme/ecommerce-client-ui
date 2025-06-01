@@ -1,0 +1,61 @@
+// Style pagination thành dấu ngang
+.swiper-pagination-bullet {
+  width: 25px;
+  height: 4px;
+  background: $pagination-bullet-color;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: $pagination-bullet-active-color;
+  width: 30px;
+}
+
+// Căn pagination xuống dưới
+.swiper-pagination {
+  bottom: 1rem;
+}
+
+// Style nút Prev & Next
+.swiper-button-prev,
+.swiper-button-next {
+  color: $pagination-default-color;
+
+  &:hover {
+    color: $pagination-hover-color;
+  }
+}
+
+@media (max-width: 768px) {
+  .ct\:mt-6 {
+    margin-top: 1.5rem;
+  }
+
+  .swiper-pagination {
+    bottom: 1rem;
+  }
+
+  .ct\:h-300-px {
+    height: 300px;
+  }
+}
+
+@media (max-width: 960px) {
+  .ct\:h-400-px {
+    height: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .swiper-pagination {
+    bottom: 1rem;
+    /* Điều chỉnh cho màn hình tablet trở lên */
+  }
+}
+
+@media (min-width: 960px) {
+  .ct\:bg-full {
+    background-size: 100%;
+  }
+}
